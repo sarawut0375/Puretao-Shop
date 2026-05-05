@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Puretao V23 - Professional Role</title>
+    <title>Puretao V6.4 - Optimized</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #D4AF37; --dark: #2D1400; --cream: #FAF7F2; --white: #FFFFFF; --border: #E8D5C4; --secondary: #8B4513; --success: #28a745; --pending: #ffc107; --danger: #dc3545; }
@@ -61,6 +61,17 @@
         .topping-preview-img { width: 30px; height: 30px; border-radius: 4px; object-fit: cover; margin-right: 8px; border: 1px solid #ddd; }
         
         .qty-btn { border:none; background:none; font-size:24px; color:var(--gold); font-weight:bold; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; }
+
+        .summary-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+        .summary-table th { background: #f8f9fa; text-align: left; padding: 8px; border-bottom: 2px solid var(--gold); }
+        .summary-table td { padding: 8px; border-bottom: 1px solid #eee; }
+        .summary-qty { font-weight: bold; color: var(--secondary); text-align: center; }
+
+        /* QR Payment Style */
+        .qr-card { background: #fdfdfd; border: 2px dashed var(--gold); border-radius: 12px; padding: 15px; text-align: center; margin-top: 10px; animation: slideIn 0.3s; }
+        .qr-img { width: 180px; height: 180px; margin: 10px auto; display: block; border: 1px solid #eee; }
+        .pay-total { font-size: 20px; font-weight: 800; color: var(--dark); margin: 5px 0; }
+        @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -99,9 +110,10 @@
         <button class="tab-btn" id="t-manage" style="display:none;" onclick="navTo('manage-page')"><span>⚙️</span>จัดการ</button>
     </div>
 
+    <!-- Page: Order -->
     <div id="order-page" class="page active">
         <div style="padding:10px 15px; font-size:12px; background:white; border-bottom:1px solid #eee; color:#666;">
-            ยินดีต้อนรับคุณ <b class="customer-name-label" style="color:var(--secondary);"></b> Puretao ยินดีต้อนรับ
+            ยินดีต้อนรับคุณ <b class="customer-name-label" style="color:var(--secondary);"></b>
         </div>
         <div id="menu-container"></div>
         <div style="position:fixed; bottom:0; width:100%; max-width:500px; padding:12px; background:rgba(250,247,242,0.95); backdrop-filter:blur(10px); z-index:90; border-top:1px solid var(--border);">
@@ -109,6 +121,7 @@
         </div>
     </div>
 
+    <!-- Page: History -->
     <div id="history-page" class="page">
         <div style="padding:15px;">
             <h2 style="font-size:18px;">รายการออเดอร์</h2>
@@ -121,26 +134,32 @@
             </div>
 
             <div id="user-total-info" style="margin-bottom:12px; padding:10px; background:var(--white); border-radius:12px; border-left:4px solid var(--gold); display:none;">
-                <small>ยอดสั่งรวมทั้งหมดของคุณ:</small>
+                <small>ยอดสั่งรวมของคุณ:</small>
                 <div class="dash-val" id="user-grand-total">฿0</div>
             </div>
         </div>
         <div id="orders-list-ui" style="padding:0 8px;"></div>
     </div>
 
+    <!-- Page: Manage -->
     <div id="manage-page" class="page">
         <div style="padding:20px;"><h2>จัดการหลังบ้าน</h2></div>
         <div style="padding:0 15px;">
-            <div class="card" style="margin:0 0 15px 0; border-style:solid; border-color:var(--gold); background: #fffcf5;">
+            <div id="manage-summary-section" class="card" style="border-color: var(--gold); background: #fff;">
+                <h4 style="font-size: 14px; color: var(--secondary); margin-bottom: 5px;">📊 สรุปสินค้าที่ขายได้วันนี้</h4>
+                <div id="item-sales-summary"></div>
+            </div>
+
+            <div class="card" style="margin:10px 0; border-style:solid; border-color:var(--gold); background: #fffcf5;">
                 <h4 style="margin-bottom:10px; font-size:14px;">ตั้งค่าข้อมูลร้าน</h4>
                 <button class="btn-main" style="background:var(--secondary); padding:10px; font-size:13px;" onclick="openShopEditModal()">✏️ แก้ไขชื่อ/รูป/รายละเอียดร้าน</button>
             </div>
 
-            <div class="card" style="margin:0 0 15px 0; border-style:dashed; border-color:var(--gold);">
+            <div class="card" style="margin:10px 0; border-style:dashed; border-color:var(--gold);">
                 <button class="btn-main" style="background:var(--gold);" onclick="openAddMenuModal()">+ เพิ่มเมนูใหม่</button>
             </div>
             
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0;">
                 <button class="btn-main" style="background:#666; font-size:13px;" onclick="exportData()">📥 Backup</button>
                 <button class="btn-main" style="background:#666; font-size:13px;" onclick="document.getElementById('import-f').click()">📤 Import</button>
             </div>
@@ -149,7 +168,7 @@
         </div>
     </div>
 
-    <!-- Modal จัดการเมนู -->
+    <!-- Modals -->
     <div id="admin-modal" class="modal">
         <div class="modal-content">
             <h3 id="modal-title" style="margin-bottom:15px;">จัดการเมนู</h3>
@@ -175,7 +194,6 @@
         </div>
     </div>
 
-    <!-- Modal แก้ไขข้อมูลร้าน -->
     <div id="shop-edit-modal" class="modal">
         <div class="modal-content">
             <h3>แก้ไขข้อมูลร้าน</h3>
@@ -184,6 +202,8 @@
                 <input type="text" id="edit-shop-name">
                 <label style="font-size:11px;">รายละเอียดร้าน:</label>
                 <textarea id="edit-shop-sub" rows="2"></textarea>
+                <label style="font-size:11px;">เบอร์ PromptPay (สำหรับรับเงิน):</label>
+                <input type="text" id="edit-shop-pp" placeholder="08x-xxx-xxxx">
                 <label style="font-size:11px;">โลโก้ร้าน:</label>
                 <input type="file" accept="image/*" onchange="encodeImg(this, 'logo')" style="font-size:11px;">
             </div>
@@ -198,8 +218,16 @@
 </div>
 
 <script>
-    const DB_URL = "https://puretao-shop-fe6e4-default-rtdb.asia-southeast1.firebasedatabase.app/db.json";
-    let db = { shop: {name:"PureTao", sub:"สดใหม่เพื่อสุขภาพ", logo:""}, menus: [], orders: [] };
+    // แยก Path ใน Firebase เป็น /content (เมนู) และ /orders (ออเดอร์)
+    const BASE_URL = "https://puretaoshop-default-rtdb.asia-southeast1.firebasedatabase.app//";
+    const CONTENT_URL = BASE_URL + "/content.json";
+    const ORDERS_URL = BASE_URL + "/orders.json";
+
+    let db = { 
+        shop: {name:"PureTao", sub:"สดใหม่เพื่อสุขภาพ", logo:"", pp:"0000000000"}, 
+        menus: [], 
+        orders: [] 
+    };
     let cart = {}; let user = ""; let userId = ""; 
     let isAdmin = false; let isStaff = false; 
     let tempMImg = ""; let tempOImg = ""; let tempLogoImg = ""; let tempOpts = [];
@@ -214,20 +242,9 @@
         const savedUser = localStorage.getItem('puretao_user_name');
         const sessionRole = sessionStorage.getItem('puretao_role');
 
-        if(sessionRole === 'admin') {
-            isAdmin = true; user = "เจ้าของร้าน";
-            document.getElementById('id-overlay').style.display = 'none';
-            enableRoleMode('เจ้าของร้าน');
-        } else if(sessionRole === 'staff') {
-            isStaff = true; user = "คนขาย";
-            document.getElementById('id-overlay').style.display = 'none';
-            enableRoleMode('คนขาย');
-        } else if(savedUser) {
-            user = savedUser;
-            document.getElementById('id-overlay').style.display = 'none';
-            document.getElementById('btn-logout-main').style.display = 'block';
-            updateUserLabels();
-        }
+        if(sessionRole === 'admin') { isAdmin = true; user = "เจ้าของร้าน"; document.getElementById('id-overlay').style.display = 'none'; enableRoleMode('เจ้าของร้าน'); }
+        else if(sessionRole === 'staff') { isStaff = true; user = "คนขาย"; document.getElementById('id-overlay').style.display = 'none'; enableRoleMode('คนขาย'); }
+        else if(savedUser) { user = savedUser; document.getElementById('id-overlay').style.display = 'none'; document.getElementById('btn-logout-main').style.display = 'block'; updateUserLabels(); }
 
         document.getElementById('btn-start').disabled = false;
         document.getElementById('btn-start').textContent = "เริ่มสั่งอาหาร";
@@ -237,43 +254,58 @@
     async function loadDB() {
         document.getElementById('cloud-status').textContent = "Sync: Loading...";
         try {
-            const res = await fetch(DB_URL + "?t=" + Date.now());
-            const data = await res.json();
-            if(data) {
-                db = data;
-                if(!db.orders) db.orders = [];
-                if(!db.menus) db.menus = [];
-                if(!db.shop) db.shop = {name:"PureTao", sub:"สดใหม่เพื่อสุขภาพ", logo:""};
+            // โหลดทั้งสอง Path พร้อมกัน
+            const [contentRes, ordersRes] = await Promise.all([
+                fetch(CONTENT_URL + "?t=" + Date.now()),
+                fetch(ORDERS_URL + "?t=" + Date.now())
+            ]);
+            
+            const contentData = await contentRes.json();
+            const ordersData = await ordersRes.json();
+
+            if(contentData) {
+                db.shop = contentData.shop || db.shop;
+                db.menus = contentData.menus || [];
                 db.menus.sort((a, b) => (a.order || 0) - (b.order || 0));
-                document.getElementById('cloud-status').textContent = "Sync: Connected ✅";
             }
+            db.orders = ordersData || [];
+            
+            document.getElementById('cloud-status').textContent = "Sync: Connected ✅";
         } catch (e) {
             document.getElementById('cloud-status').textContent = "Sync: Offline ⚠️";
-            const local = localStorage.getItem('puretao_v23_db');
+            const local = localStorage.getItem('puretao_v6.4_db');
             if(local) db = JSON.parse(local);
         }
     }
 
-    async function saveDB() {
+    // ฟังก์ชันบันทึกแยกส่วน
+    async function saveContent() {
         if(!isInitialLoadDone) return;
-        localStorage.setItem('puretao_v23_db', JSON.stringify(db));
-        document.getElementById('cloud-status').textContent = "Sync: Saving...";
+        document.getElementById('cloud-status').textContent = "Sync: Saving Menus...";
         try {
-            await fetch(DB_URL, { method: 'PUT', body: JSON.stringify(db) });
+            const data = { shop: db.shop, menus: db.menus };
+            await fetch(CONTENT_URL, { method: 'PUT', body: JSON.stringify(data) });
+            localStorage.setItem('puretao_v6.4_db', JSON.stringify(db));
             document.getElementById('cloud-status').textContent = "Sync: Saved ✅";
-        } catch (e) {
-            document.getElementById('cloud-status').textContent = "Sync: Local Only 💾";
-        }
+        } catch (e) { document.getElementById('cloud-status').textContent = "Sync: Local Only 💾"; }
+    }
+
+    async function saveOrders() {
+        if(!isInitialLoadDone) return;
+        document.getElementById('cloud-status').textContent = "Sync: Updating Orders...";
+        try {
+            await fetch(ORDERS_URL, { method: 'PUT', body: JSON.stringify(db.orders) });
+            localStorage.setItem('puretao_v6.4_db', JSON.stringify(db));
+            document.getElementById('cloud-status').textContent = "Sync: Saved ✅";
+        } catch (e) { document.getElementById('cloud-status').textContent = "Sync: Local Only 💾"; }
     }
 
     function renderMenus() {
         const list = document.getElementById('menu-container');
         if(!db.menus || db.menus.length === 0) { list.innerHTML = "<div style='text-align:center; padding:80px 20px; color:#bbb;'>ไม่มีรายการเมนู</div>"; return; }
-        
         list.innerHTML = db.menus.map((m, index) => {
             const c = cart[m.id] || { qty: 0, opts: [] };
-            return `
-            <div class="card">
+            return `<div class="card">
                 <div style="display:flex; gap:12px; align-items:center;">
                     <img src="${m.img || 'https://via.placeholder.com/100'}" style="width:75px; height:75px; border-radius:12px; object-fit:cover;" onclick="zoom('${m.img}')">
                     <div style="flex:1">
@@ -296,43 +328,24 @@
                         </div>
                     </div>
                 </div>
-                ${m.options && m.options.length > 0 ? `
-                <div class="topping-container">
-                    ${m.options.map(o => `
-                        <div class="topping-item" onclick="handleToppingClick(event, ${m.id}, '${o.name}')">
-                            <div class="topping-left">
-                                <input type="checkbox" id="opt-${m.id}-${o.name}" ${(c.opts.includes(o.name))?'checked':''} ${(c.qty==0)?'disabled':''}>
-                                ${o.img ? `<img src="${o.img}" class="topping-img" onclick="event.stopPropagation(); zoom('${o.img}')">` : ''}
-                                <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60px;">${o.name}</span>
-                                <span class="topping-price">฿${o.price}</span>
-                            </div>
+                ${m.options && m.options.length > 0 ? `<div class="topping-container">${m.options.map(o => `
+                    <div class="topping-item" onclick="handleToppingClick(event, ${m.id}, '${o.name}')">
+                        <div class="topping-left">
+                            <input type="checkbox" id="opt-${m.id}-${o.name}" ${(c.opts.includes(o.name))?'checked':''} ${(c.qty==0)?'disabled':''}>
+                            ${o.img ? `<img src="${o.img}" class="topping-img" onclick="event.stopPropagation(); zoom('${o.img}')">` : ''}
+                            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60px;">${o.name}</span>
+                            <span class="topping-price">฿${o.price}</span>
                         </div>
-                    `).join('')}
-                </div>` : ''}
+                    </div>`).join('')}</div>` : ''}
             </div>`;
         }).join('');
     }
 
-    // ฟังก์ชันจัดการคลิก Topping (ป้องกันการเปลี่ยนค่าเมื่อกดเลข)
     function handleToppingClick(event, mid, optName) {
-        // ถ้ากดโดน checkbox หรือ พื้นที่รอบๆ ให้ทำงาน
         const cb = document.getElementById(`opt-${mid}-${optName}`);
         if(cb.disabled) return;
-        if(event.target.tagName !== 'INPUT') {
-            cb.checked = !cb.checked;
-        }
+        if(event.target.tagName !== 'INPUT') cb.checked = !cb.checked;
         toggleOpt(mid, optName);
-    }
-
-    async function moveMenu(index, direction) {
-        const newIndex = index + direction;
-        if (newIndex < 0 || newIndex >= db.menus.length) return;
-        const temp = db.menus[index];
-        db.menus[index] = db.menus[newIndex];
-        db.menus[newIndex] = temp;
-        db.menus.forEach((m, i) => m.order = i);
-        renderMenus();
-        await saveDB();
     }
 
     function updateCartUI(id, d) {
@@ -340,8 +353,7 @@
         cart[id].qty = Math.max(0, cart[id].qty + d);
         if(cart[id].qty === 0) cart[id].opts = [];
         document.getElementById(`qty-${id}`).textContent = cart[id].qty;
-        const checks = document.querySelectorAll(`input[id^="opt-${id}-"]`);
-        checks.forEach(ch => {
+        document.querySelectorAll(`input[id^="opt-${id}-"]`).forEach(ch => {
             ch.disabled = cart[id].qty === 0;
             if(cart[id].qty === 0) ch.checked = false;
         });
@@ -375,57 +387,21 @@
         db.menus.forEach(m => {
             let c = cart[m.id];
             if(c && c.qty > 0) {
-                let p = m.price;
-                let optStr = "";
+                let p = m.price; let optStr = "";
                 if(m.options) m.options.forEach(o => { if(c.opts.includes(o.name)) { p += o.price; optStr += ` (+${o.name})`; }});
                 items.push(`${m.name}${optStr} x${c.qty}`);
                 total += (p * c.qty);
             }
         });
-        
         let displayName = (isAdmin) ? "เจ้าของร้าน" : (isStaff) ? "คนขาย" : `ลูกค้า (${user})`;
-
         db.orders.unshift({
             id: Date.now(), uid: userId, user: displayName, items: items, total: total,
             status: "รอดำเนินการ", time: new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'}),
             date: new Date().toLocaleDateString('th-TH'), timestamp: Date.now(),
             staff_in_charge: (isAdmin || isStaff) ? user : "ลูกค้าสั่งเอง"
         });
-        await saveDB(); cart = {}; calculateTotal(); alert('✅ ส่งออเดอร์แล้ว'); navTo('history-page');
-    }
-
-    function openShopEditModal() {
-        if(!isAdmin) return;
-        document.getElementById('edit-shop-name').value = db.shop.name;
-        document.getElementById('edit-shop-sub').value = db.shop.sub;
-        tempLogoImg = db.shop.logo || "";
-        document.getElementById('shop-edit-modal').style.display = 'flex';
-    }
-
-    async function saveShopInfo() {
-        const newName = document.getElementById('edit-shop-name').value.trim();
-        const newSub = document.getElementById('edit-shop-sub').value.trim();
-        if(!newName) return alert('กรุณาระบุชื่อร้าน');
-        
-        db.shop.name = newName;
-        db.shop.sub = newSub;
-        if(tempLogoImg) db.shop.logo = tempLogoImg;
-        
-        await saveDB();
-        updateShopUI();
-        closeModal('shop-edit-modal');
-        alert('บันทึกข้อมูลร้านเรียบร้อย');
-    }
-
-    async function navTo(page) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(page).classList.add('active');
-        const tabKey = page === 'manage-page' ? 't-manage' : 't-' + page.split('-')[0];
-        document.getElementById(tabKey).classList.add('active');
-        if(page !== 'order-page') await loadDB();
-        if(page === 'order-page') renderMenus();
-        if(page === 'history-page') renderOrders();
+        // เซฟเฉพาะส่วน Orders (ไม่มีรูปภาพ ทำให้เร็วมาก)
+        await saveOrders(); cart = {}; calculateTotal(); alert('✅ ส่งออเดอร์แล้ว'); navTo('history-page');
     }
 
     function renderOrders() {
@@ -434,20 +410,14 @@
         let allOrders = db.orders || [];
         let todayOrders = allOrders.filter(o => o.date === todayStr);
         let successOrders = todayOrders.filter(o => o.status === 'เสร็จสิ้น');
-        let cancelOrders = todayOrders.filter(o => o.status === 'ยกเลิก');
-
+        
         if(isAdmin) {
-            document.getElementById('admin-dashboard').style.display = 'grid';
-            document.getElementById('user-total-info').style.display = 'none';
+            document.getElementById('admin-dashboard').style.display = 'grid'; document.getElementById('user-total-info').style.display = 'none';
             document.getElementById('today-sales').textContent = `฿${successOrders.reduce((a,b) => a + b.total, 0)}`;
             document.getElementById('today-count').textContent = todayOrders.length;
-            document.getElementById('today-cancel').textContent = cancelOrders.length;
-        } else if(isStaff) {
-            document.getElementById('admin-dashboard').style.display = 'none';
-            document.getElementById('user-total-info').style.display = 'none';
-        } else {
-            document.getElementById('admin-dashboard').style.display = 'none';
-            document.getElementById('user-total-info').style.display = 'block';
+            document.getElementById('today-cancel').textContent = todayOrders.filter(o => o.status === 'ยกเลิก').length;
+        } else if(!isStaff) {
+            document.getElementById('admin-dashboard').style.display = 'none'; document.getElementById('user-total-info').style.display = 'block';
             let myValidOrders = allOrders.filter(o => o.uid === userId && o.status !== 'ยกเลิก');
             document.getElementById('user-grand-total').textContent = `฿${myValidOrders.reduce((a,b) => a + b.total, 0)}`;
         }
@@ -455,11 +425,14 @@
         let show = (isAdmin || isStaff) ? allOrders : allOrders.filter(o => o.uid === userId);
         if(!show || show.length === 0) { list.innerHTML = "<center style='padding:50px; color:#bbb;'>ไม่มีข้อมูล</center>"; return; }
         
-        list.innerHTML = show.map(o => `
-            <div class="card" style="border-left: 5px solid ${o.status === 'ยกเลิก' ? 'var(--danger)' : o.status === 'เสร็จสิ้น' ? 'var(--success)' : 'var(--pending)'}">
+        list.innerHTML = show.map(o => {
+            const ppId = db.shop.pp || "0000000000";
+            const qrUrl = `https://promptpay.io/${ppId}/${o.total}.png`;
+
+            return `<div class="card" style="border-left: 5px solid ${o.status === 'ยกเลิก' ? 'var(--danger)' : o.status === 'เสร็จสิ้น' ? 'var(--success)' : 'var(--pending)'}">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
                     <div>
-                        <small style="color:#999; font-size:10px;">${o.time} | ผู้รับ: <b>${o.staff_in_charge || '-'}</b></small>
+                        <small style="color:#999; font-size:10px;">${o.time} | รับออเดอร์: <b>${o.staff_in_charge || '-'}</b></small>
                         <div style="font-weight:700; font-size:14px;">${o.user}</div>
                     </div>
                     <span class="status-badge ${o.status === 'ยกเลิก' ? 'bg-danger' : o.status === 'เสร็จสิ้น' ? 'bg-success' : 'bg-pending'}">${o.status}</span>
@@ -467,199 +440,126 @@
                 <div style="font-size:13px; margin-bottom:10px; line-height:1.4; ${o.status === 'ยกเลิก' ? 'text-decoration:line-through; color:#ccc;' : ''}">
                     ${o.items.join('<br>')}
                 </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f5f5f5; padding-top:8px;">
-                    <b style="color:var(--secondary); font-size:15px;">฿${o.total}</b>
+
+                ${o.status === 'เสร็จสิ้น' ? `
+                <div class="qr-card">
+                    <div style="font-size:11px; color:var(--gold); font-weight:700;">💳 สแกนชำระเงินผ่าน PromptPay</div>
+                    <img src="${qrUrl}" class="qr-img">
+                    <div class="pay-total">฿${o.total}</div>
+                    <small style="color:#999;">ขอบคุณที่ใช้บริการค่ะ</small>
+                </div>` : ''}
+
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f5f5f5; padding-top:8px; margin-top:10px;">
+                    <b style="color:var(--secondary); font-size:15px;">ยอดรวม ฿${o.total}</b>
                     <div style="display:flex; gap:6px;">
                         ${(isAdmin || isStaff) && o.status === 'รอดำเนินการ' ? `<button onclick="updateStatus(${o.id}, 'เสร็จสิ้น')" style="background:var(--success); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px;">สำเร็จ</button>` : ''}
                         ${o.status === 'รอดำเนินการ' ? `<button onclick="updateStatus(${o.id}, 'ยกเลิก')" style="background:#f1f1f1; color:#666; border:none; padding:6px 12px; border-radius:8px; font-size:11px;">ยกเลิก</button>` : ''}
                     </div>
                 </div>
-            </div>`).join('');
+            </div>`}).join('');
     }
 
     async function updateStatus(id, newStatus) {
         if(confirm(`ยืนยันเป็น "${newStatus}"?`)) {
             let idx = db.orders.findIndex(o => o.id === id);
-            if(idx > -1) { db.orders[idx].status = newStatus; await saveDB(); renderOrders(); }
+            if(idx > -1) { 
+                db.orders[idx].status = newStatus; 
+                await saveOrders(); // เซฟเฉพาะออเดอร์ ข้อมูลจะอัปเดตไวมาก
+                renderOrders(); 
+                if(isAdmin) updateSalesSummary();
+            }
         }
     }
 
-    async function clearAllOrders() {
+    async function navTo(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(page).classList.add('active');
+        const tabKey = page === 'manage-page' ? 't-manage' : 't-' + page.split('-')[0];
+        document.getElementById(tabKey).classList.add('active');
+        
+        await loadDB(); // โหลดใหม่ทุกครั้งที่เปลี่ยนหน้าเพื่อความ Realtime
+        if(page === 'order-page') renderMenus();
+        if(page === 'history-page') renderOrders();
+        if(page === 'manage-page' && isAdmin) updateSalesSummary();
+    }
+
+    function updateSalesSummary() {
+        const todayStr = new Date().toLocaleDateString('th-TH');
+        const summaryDiv = document.getElementById('item-sales-summary');
+        if (!isAdmin) return;
+        let itemCounts = {};
+        db.orders.forEach(o => { if (o.date === todayStr && o.status === 'เสร็จสิ้น') { o.items.forEach(line => { let p = line.split(' x'); let name = p[0]; let qty = parseInt(p[1]) || 0; itemCounts[name] = (itemCounts[name] || 0) + qty; }); }});
+        const sorted = Object.entries(itemCounts).sort((a,b) => b[1] - a[1]);
+        if (sorted.length === 0) { summaryDiv.innerHTML = "<p style='font-size:11px; color:#999; padding:10px;'>ไม่มีรายการขายสำเร็จ</p>"; return; }
+        let html = `<table class="summary-table"><thead><tr><th>สินค้า</th><th style="text-align:center;">จำนวน</th></tr></thead><tbody>`;
+        sorted.forEach(([n, q]) => { html += `<tr><td>${n}</td><td class="summary-qty">${q}</td></tr>`; });
+        summaryDiv.innerHTML = html + `</tbody></table>`;
+    }
+
+    function openShopEditModal() {
         if(!isAdmin) return;
-        if(confirm('ลบออเดอร์ทั้งหมด?')) { db.orders = []; await saveDB(); renderOrders(); }
+        document.getElementById('edit-shop-name').value = db.shop.name;
+        document.getElementById('edit-shop-sub').value = db.shop.sub;
+        document.getElementById('edit-shop-pp').value = db.shop.pp || "";
+        tempLogoImg = db.shop.logo || "";
+        document.getElementById('shop-edit-modal').style.display = 'flex';
     }
 
-    function openAddMenuModal() {
-        if(!isAdmin) return;
-        document.getElementById('modal-title').textContent = "เพิ่มเมนูใหม่";
-        document.getElementById('edit-menu-id').value = "";
-        document.getElementById('m-name').value = "";
-        document.getElementById('m-price').value = "";
-        tempOpts = []; tempMImg = "";
-        renderToppingEdit();
-        document.getElementById('admin-modal').style.display = 'flex';
+    async function saveShopInfo() {
+        const n = document.getElementById('edit-shop-name').value.trim();
+        const s = document.getElementById('edit-shop-sub').value.trim();
+        const p = document.getElementById('edit-shop-pp').value.trim();
+        if(!n) return alert('กรุณาระบุชื่อร้าน');
+        db.shop.name = n; db.shop.sub = s; db.shop.pp = p;
+        if(tempLogoImg) db.shop.logo = tempLogoImg;
+        await saveContent(); updateShopUI(); closeModal('shop-edit-modal'); alert('บันทึกข้อมูลแล้ว');
     }
 
-    function editMenu(id) {
-        if(!isAdmin) return;
-        const m = db.menus.find(item => item.id === id);
-        if(!m) return;
-        document.getElementById('modal-title').textContent = "แก้ไขเมนู";
-        document.getElementById('edit-menu-id').value = m.id;
-        document.getElementById('m-name').value = m.name;
-        document.getElementById('m-price').value = m.price;
-        tempOpts = m.options ? [...m.options] : [];
-        tempMImg = m.img || "";
-        renderToppingEdit();
-        document.getElementById('admin-modal').style.display = 'flex';
-    }
-
-    function renderToppingEdit() {
-        const container = document.getElementById('opt-list-edit');
-        if(tempOpts.length === 0) { container.innerHTML = "<small style='color:#999;'>ยังไม่มีท็อปปิ้ง</small>"; return; }
-        container.innerHTML = tempOpts.map((o, idx) => `
-            <div class="topping-edit-item">
-                <div style="display:flex; align-items:center; flex:1; cursor:pointer;" onclick="inlineEditTopping(${idx})">
-                    <img src="${o.img || 'https://via.placeholder.com/30'}" class="topping-preview-img">
-                    <span><b>${o.name}</b> (+฿${o.price})</span>
-                </div>
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <label style="cursor:pointer; font-size:16px;">🖼️<input type="file" style="display:none" onchange="editToppingImg(${idx}, this)"></label>
-                    <span onclick="removeTopping(${idx})" style="color:red; font-weight:bold; cursor:pointer; font-size:16px;">✕</span>
-                </div>
-            </div>`).join('');
-    }
-
-    function editToppingImg(idx, input) {
-        if(!input.files[0]) return;
-        let r = new FileReader();
-        r.onload = (e) => { tempOpts[idx].img = e.target.result; renderToppingEdit(); };
-        r.readAsDataURL(input.files[0]);
-    }
-
-    function inlineEditTopping(idx) {
-        let o = tempOpts[idx];
-        let newName = prompt("แก้ไขชื่อท็อปปิ้ง:", o.name);
-        if(newName === null) return;
-        let newPrice = prompt("แก้ไขราคาเพิ่ม (+):", o.price);
-        if(newPrice === null) return;
-        tempOpts[idx].name = newName;
-        tempOpts[idx].price = parseInt(newPrice);
-        renderToppingEdit();
-    }
-
-    function removeTopping(idx) {
-        if(confirm('ลบท็อปปิ้งนี้?')) { tempOpts.splice(idx, 1); renderToppingEdit(); }
-    }
-
-    async function saveMenu() {
-        let name = document.getElementById('m-name').value;
-        let price = document.getElementById('m-price').value;
-        let editId = document.getElementById('edit-menu-id').value;
-        if(!name || !price) return alert('ใส่ข้อมูลให้ครบ');
-        if(editId) {
-            let idx = db.menus.findIndex(m => m.id == editId);
-            db.menus[idx] = { ...db.menus[idx], name: name, price: parseInt(price), img: tempMImg || db.menus[idx].img, options: tempOpts };
-        } else {
-            db.menus.push({ id: Date.now(), name: name, price: parseInt(price), img: tempMImg, options: tempOpts, order: db.menus.length });
-        }
-        await saveDB(); closeModal('admin-modal'); renderMenus();
-    }
-
-    function addOptToTemp() {
-        let n = document.getElementById('o-name').value;
-        let p = document.getElementById('o-price').value;
-        if(n && p) {
-            tempOpts.push({ name: n, price: parseInt(p), img: tempOImg });
-            document.getElementById('o-name').value=''; document.getElementById('o-price').value=''; document.getElementById('o-img-input').value='';
-            tempOImg=""; renderToppingEdit();
-        } else { alert('กรุณากรอกชื่อและราคา'); }
-    }
-
-    function enterAsCustomer() {
-        let name = document.getElementById('input-username').value.trim();
-        if(!name) return alert('กรุณาใส่ชื่อของคุณ');
-        user = name; localStorage.setItem('puretao_user_name', user);
-        document.getElementById('id-overlay').style.display = 'none';
-        document.getElementById('btn-logout-main').style.display = 'block';
-        updateUserLabels(); renderMenus();
-    }
+    async function moveMenu(i, d) { let n = i + d; if (n < 0 || n >= db.menus.length) return; let t = db.menus[i]; db.menus[i] = db.menus[n]; db.menus[n] = t; db.menus.forEach((m, x) => m.order = x); renderMenus(); await saveContent(); }
+    function openAddMenuModal() { if(!isAdmin) return; document.getElementById('modal-title').textContent = "เพิ่มเมนูใหม่"; document.getElementById('edit-menu-id').value = ""; document.getElementById('m-name').value = ""; document.getElementById('m-price').value = ""; tempOpts = []; tempMImg = ""; renderToppingEdit(); document.getElementById('admin-modal').style.display = 'flex'; }
+    function editMenu(id) { if(!isAdmin) return; const m = db.menus.find(x => x.id === id); if(!m) return; document.getElementById('modal-title').textContent = "แก้ไขเมนู"; document.getElementById('edit-menu-id').value = m.id; document.getElementById('m-name').value = m.name; document.getElementById('m-price').value = m.price; tempOpts = m.options ? [...m.options] : []; tempMImg = m.img || ""; renderToppingEdit(); document.getElementById('admin-modal').style.display = 'flex'; }
+    function renderToppingEdit() { const c = document.getElementById('opt-list-edit'); if(tempOpts.length === 0) { c.innerHTML = "<small style='color:#999;'>ไม่มีท็อปปิ้ง</small>"; return; } c.innerHTML = tempOpts.map((o, i) => `<div class="topping-edit-item"><div style="display:flex; align-items:center; flex:1; cursor:pointer;" onclick="inlineEditTopping(${i})"><img src="${o.img || 'https://via.placeholder.com/30'}" class="topping-preview-img"><span><b>${o.name}</b> (+฿${o.price})</span></div><div style="display:flex; gap:10px; align-items:center;"><label style="cursor:pointer; font-size:16px;">🖼️<input type="file" style="display:none" onchange="editToppingImg(${i}, this)"></label><span onclick="removeTopping(${i})" style="color:red; font-weight:bold; cursor:pointer; font-size:16px;">✕</span></div></div>`).join(''); }
+    async function saveMenu() { let n = document.getElementById('m-name').value; let p = document.getElementById('m-price').value; let e = document.getElementById('edit-menu-id').value; if(!n || !p) return alert('ใส่ข้อมูลให้ครบ'); if(e) { let i = db.menus.findIndex(x => x.id == e); db.menus[i] = { ...db.menus[i], name: n, price: parseInt(p), img: tempMImg || db.menus[i].img, options: tempOpts }; } else { db.menus.push({ id: Date.now(), name: n, price: parseInt(p), img: tempMImg, options: tempOpts, order: db.menus.length }); } await saveContent(); closeModal('admin-modal'); renderMenus(); }
+    function addOptToTemp() { let n = document.getElementById('o-name').value; let p = document.getElementById('o-price').value; if(n && p) { tempOpts.push({ name: n, price: parseInt(p), img: tempOImg }); document.getElementById('o-name').value=''; document.getElementById('o-price').value=''; tempOImg=""; renderToppingEdit(); } else alert('กรอกชื่อและราคา'); }
+    function enterAsCustomer() { let n = document.getElementById('input-username').value.trim(); if(!n) return alert('ใส่ชื่อของคุณ'); user = n; localStorage.setItem('puretao_user_name', user); document.getElementById('id-overlay').style.display = 'none'; document.getElementById('btn-logout-main').style.display = 'block'; updateUserLabels(); renderMenus(); }
+    function enterAsStaffOrAdmin() { let p = prompt("รหัสผ่าน:"); if(p === '1234') { isAdmin = true; sessionStorage.setItem('puretao_role', 'admin'); document.getElementById('id-overlay').style.display = 'none'; enableRoleMode('เจ้าของร้าน'); navTo('history-page'); } else if(p === '1111') { isStaff = true; sessionStorage.setItem('puretao_role', 'staff'); document.getElementById('id-overlay').style.display = 'none'; enableRoleMode('คนขาย'); navTo('history-page'); } else if(p !== null) alert("รหัสผ่านไม่ถูกต้อง"); }
+    function logout() { if(confirm('ออกจากระบบ?')) { localStorage.clear(); sessionStorage.clear(); location.reload(); } }
+    function enableRoleMode(r) { const b = document.getElementById('role-badge'); b.style.display = 'block'; b.textContent = r; document.getElementById('btn-logout-main').style.display = 'block'; if(r === 'เจ้าของร้าน') { document.getElementById('t-manage').style.display = 'flex'; document.getElementById('manage-summary-section').style.display = 'block'; } else { document.getElementById('manage-summary-section').style.display = 'none'; } }
     
-    function enterAsStaffOrAdmin() {
-        let pw = prompt("รหัสผ่าน:");
-        if(pw === '1234') {
-            isAdmin = true; isStaff = false;
-            sessionStorage.setItem('puretao_role', 'admin');
-            document.getElementById('id-overlay').style.display = 'none';
-            enableRoleMode('เจ้าของร้าน'); navTo('history-page');
-        } else if(pw === '1111') {
-            isStaff = true; isAdmin = false;
-            sessionStorage.setItem('puretao_role', 'staff');
-            document.getElementById('id-overlay').style.display = 'none';
-            enableRoleMode('คนขาย'); navTo('history-page');
-        } else if(pw !== null) { alert("รหัสผ่านไม่ถูกต้อง"); }
-    }
+    // ฟังก์ชันย่อรูปภาพก่อนบันทึก (แก้ปัญหาช้า)
+    function encodeImg(i, m) { 
+        if(!i.files[0]) return; 
+        let reader = new FileReader(); 
+        reader.onload = (e) => { 
+            let img = new Image();
+            img.onload = () => {
+                let canvas = document.createElement('canvas');
+                let max_size = 400; // ย่อไม่เกิน 400px
+                let width = img.width; let height = img.height;
+                if (width > height) { if (width > max_size) { height *= max_size / width; width = max_size; } } 
+                else { if (height > max_size) { width *= max_size / height; height = max_size; } }
+                canvas.width = width; canvas.height = height;
+                canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                let dataUrl = canvas.toDataURL('image/jpeg', 0.7); // บีบอัด 70%
 
-    function logout() { 
-        if(confirm('ต้องการออกจากระบบ?')) { localStorage.clear(); sessionStorage.clear(); location.reload(); }
-    }
-
-    function enableRoleMode(role) { 
-        const badge = document.getElementById('role-badge');
-        badge.style.display = 'block';
-        badge.textContent = role;
-        document.getElementById('btn-logout-main').style.display = 'block';
-        if(role === 'เจ้าของร้าน') document.getElementById('t-manage').style.display = 'flex';
-    }
-
-    function encodeImg(i, mode) { 
-        if(!i.files[0]) return;
-        let r = new FileReader(); 
-        r.onload = (e) => { 
-            if(mode === 'menu') tempMImg = e.target.result; 
-            else if(mode === 'logo') tempLogoImg = e.target.result;
-            else tempOImg = e.target.result; 
+                if(m === 'menu') tempMImg = dataUrl; 
+                else if(m === 'logo') tempLogoImg = dataUrl; 
+                else tempOImg = dataUrl; 
+            };
+            img.src = e.target.result;
         }; 
-        r.readAsDataURL(i.files[0]); 
+        reader.readAsDataURL(i.files[0]); 
     }
 
-    function updateShopUI() { 
-        document.getElementById('ui-name').textContent = db.shop.name; 
-        document.getElementById('ui-sub').textContent = db.shop.sub; 
-        document.getElementById('landing-shop-name').textContent = db.shop.name; 
-        document.getElementById('landing-shop-sub').textContent = db.shop.sub; 
-        if(db.shop.logo) { 
-            document.getElementById('ui-logo').src = db.shop.logo; 
-            document.getElementById('landing-logo').src = db.shop.logo; 
-        }
-    }
-
+    function updateShopUI() { document.getElementById('ui-name').textContent = db.shop.name; document.getElementById('ui-sub').textContent = db.shop.sub; document.getElementById('landing-shop-name').textContent = db.shop.name; document.getElementById('landing-shop-sub').textContent = db.shop.sub; if(db.shop.logo) { document.getElementById('ui-logo').src = db.shop.logo; document.getElementById('landing-logo').src = db.shop.logo; } }
     function updateUserLabels() { document.querySelectorAll('.customer-name-label').forEach(el => el.textContent = user); }
     function zoom(s) { if(s) { document.getElementById('zoom-modal').style.display='flex'; document.getElementById('zoom-img').src=s; } }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    async function delMenu(id) { 
-        if(!isAdmin) return;
-        if(confirm('ยืนยันการลบ?')) { db.menus = db.menus.filter(m => m.id !== id); await saveDB(); renderMenus(); } 
-    }
-    function exportData() {
-        if(!isAdmin) return;
-        const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = `puretao_db_${Date.now()}.json`;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    }
-    function importData(input) {
-        if(!isAdmin) return;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            try {
-                const json = JSON.parse(e.target.result);
-                if(confirm('เขียนทับข้อมูลทั้งหมด?')) { db = json; await saveDB(); location.reload(); }
-            } catch (err) { alert('ไฟล์ไม่ถูกต้อง'); }
-        };
-        reader.readAsText(input.files[0]);
-    }
+    async function delMenu(id) { if(!isAdmin) return; if(confirm('ยืนยันการลบ?')) { db.menus = db.menus.filter(m => m.id !== id); await saveContent(); renderMenus(); } }
+    function exportData() { if(!isAdmin) return; const b = new Blob([JSON.stringify(db)], {type: "application/json"}); const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href = u; a.download = `puretao_db_${Date.now()}.json`; a.click(); }
+    function importData(i) { if(!isAdmin) return; const r = new FileReader(); r.onload = async (e) => { try { const j = JSON.parse(e.target.result); if(confirm('เขียนทับข้อมูล?')) { db = j; await saveContent(); await saveOrders(); location.reload(); } } catch (x) { alert('ไฟล์ผิดพลาด'); } }; r.readAsText(i.files[0]); }
+    async function clearAllOrders() { if(!isAdmin) return; if(confirm('ลบออเดอร์ทั้งหมด?')) { db.orders = []; await saveOrders(); renderOrders(); } }
 </script>
 </body>
 </html>
