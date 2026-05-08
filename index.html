@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Puretao V8.2 - Stock System</title>
+    <title>Puretao V8.6 - Stock System</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #D4AF37; --dark: #2D1400; --cream: #FAF7F2; --white: #FFFFFF; --border: #E8D5C4; --secondary: #8B4513; --success: #28a745; --pending: #ffc107; --danger: #dc3545; }
@@ -17,7 +17,7 @@
         .shop-info p { font-size: 11px; color: #888; }
         .header-logout { font-size: 11px; color: var(--danger); font-weight: 700; border: 1px solid #ffcccc; padding: 4px 8px; border-radius: 8px; background: #fff5f5; cursor: pointer; }
         .nav-tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; height: 55px; }
-        .tab-btn { flex: 1; border: none; background: none; font-size: 10px; font-weight: 600; color: #999; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .tab-btn { flex: 1; border: none; background: none; font-size: 10px; font-weight: 800; color: #999; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: inherit; letter-spacing: 0.2px; }
         .tab-btn.active { color: var(--gold); border-bottom: 3px solid var(--gold); }
         .tab-btn span { font-size: 18px; margin-bottom: 2px; }
         .page { display: none; padding-bottom: 150px; animation: fadeIn 0.2s; }
@@ -167,12 +167,48 @@
         .order-detail-card .order-price { font-size: 15px; font-weight: 800; color: var(--dark); }
         .order-detail-card .order-items { font-size: 12px; color: #555; line-height: 1.6; border-top: 1px dashed #eee; padding-top: 6px; margin-top: 6px; }
         .order-detail-card .order-item-line { padding: 2px 0; }
-        .order-detail-card .order-item-line::before { content: "• "; color: var(--gold); }
+        .order-detail-card .order-item-line { padding-left: 2px; }
         .no-orders-msg { text-align: center; padding: 20px; color: #bbb; font-size: 13px; }
         .hist-datepicker-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
         .hist-datepicker-row label { font-size: 11px; color: #666; white-space: nowrap; flex-shrink: 0; }
         .hist-datepicker-row input[type="date"] { flex: 1; padding: 6px 8px; font-size: 12px; margin-bottom: 0; border: none; background: transparent; outline: none; min-width: 0; }
         .btn-goto-today { font-size: 11px; background: var(--gold); color: white; border: none; border-radius: 8px; padding: 6px 10px; font-family: inherit; font-weight: 700; cursor: pointer; flex-shrink: 0; }
+
+        /* ===== Snapshot History ===== */
+        .snap-row { background: var(--white); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; overflow: hidden; }
+        .snap-row-main { display: flex; align-items: center; gap: 8px; padding: 10px 12px; }
+        .snap-row-date { flex: 1; }
+        .snap-row-date .sd-label { font-size: 13px; font-weight: 700; color: var(--dark); }
+        .snap-row-date .sd-sub { font-size: 10px; color: #999; margin-top: 1px; }
+        .snap-row-stats { text-align: right; flex-shrink: 0; }
+        .snap-row-stats .sr-revenue { font-size: 14px; font-weight: 800; color: var(--success); }
+        .snap-row-stats .sr-count { font-size: 10px; color: #888; }
+        .btn-snap-detail { border: 1px solid var(--secondary); background: white; color: var(--secondary); font-size: 11px; font-weight: 700; padding: 5px 9px; border-radius: 8px; cursor: pointer; font-family: inherit; flex-shrink: 0; transition: background 0.15s; }
+        .btn-snap-detail.open { background: var(--secondary); color: white; }
+        .snap-detail-wrap { display: none; border-top: 1px dashed #eee; background: #fafafa; padding: 10px 12px; }
+        .snap-detail-wrap.show { display: block; }
+        .snap-detail-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .snap-detail-table th { background: #f0f0f0; padding: 5px 6px; text-align: center; font-size: 10px; }
+        .snap-detail-table th:first-child { text-align: left; }
+        .snap-detail-table td { padding: 5px 6px; border-bottom: 1px solid #eee; text-align: center; }
+        .snap-detail-table td:first-child { text-align: left; color: var(--secondary); font-weight: 600; }
+        .snap-auto-badge { display: inline-block; font-size: 9px; background: #e8f5e9; color: var(--success); border-radius: 4px; padding: 1px 5px; margin-left: 4px; font-weight: 600; }
+        .snap-manual-badge { display: inline-block; font-size: 9px; background: #e3f2fd; color: #1976d2; border-radius: 4px; padding: 1px 5px; margin-left: 4px; font-weight: 600; }
+
+        /* ===== Chart Cards ===== */
+        .chart-range-bar { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+        .chart-range-btn { border: 1px solid var(--border); background: #f5f5f5; color: #666; font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+        .chart-range-btn.active { background: var(--gold); color: white; border-color: var(--gold); }
+        .chart-custom-wrap { display: none; margin-top: 8px; }
+        .chart-custom-wrap.show { display: block; }
+        .chart-custom-inputs { display: flex; gap: 8px; align-items: flex-end; }
+        .chart-custom-inputs .ci { flex: 1; }
+        .chart-custom-inputs .ci label { font-size: 10px; color: #888; display: block; margin-bottom: 3px; }
+        .chart-custom-inputs input[type=date] { width: 100%; padding: 7px 8px; font-size: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0; font-family: inherit; background: white; }
+        .chart-apply-btn { background: var(--gold); color: white; border: none; border-radius: 8px; padding: 7px 12px; font-size: 11px; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+        .chart-canvas-wrap { width: 100%; height: 200px; margin-top: 6px; position: relative; }
+        .chart-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+        .stock-item-select { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px; font-family: inherit; color: var(--dark); background: #fafafa; margin-bottom: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -206,6 +242,7 @@
     <div class="nav-tabs">
         <button class="tab-btn active" id="t-order" onclick="navTo('order-page')"><span>🥛</span>เมนู</button>
         <button class="tab-btn" id="t-history" onclick="navTo('history-page')"><span>📜</span>ออเดอร์</button>
+        <button class="tab-btn" id="t-sales" style="display:none;" onclick="navTo('sales-page')"><span>📊</span>ประวัติการขาย</button>
         <button class="tab-btn" id="t-manage" style="display:none;" onclick="navTo('manage-page')"><span>⚙️</span>จัดการ</button>
     </div>
 
@@ -215,7 +252,7 @@
             ยินดีต้อนรับคุณ <b class="customer-name-label" style="color:var(--secondary);"></b>
         </div>
         <div id="menu-container"></div>
-        <div style="position:fixed; bottom:0; width:100%; max-width:500px; padding:12px; background:rgba(250,247,242,0.98); backdrop-filter:blur(10px); z-index:90; border-top:1px solid var(--border); box-shadow: 0 -5px 20px rgba(0,0,0,0.05);">
+        <div id="order-bottom-bar" style="position:fixed; bottom:0; width:100%; max-width:500px; padding:12px; background:rgba(250,247,242,0.98); backdrop-filter:blur(10px); z-index:90; border-top:1px solid var(--border); box-shadow: 0 -5px 20px rgba(0,0,0,0.05);">
             <div id="cart-preview" class="cart-summary-bubble" style="display:none;"></div>
             <button class="btn-main" id="btn-submit" onclick="confirmAndPlaceOrder()" disabled>กรุณาเลือกเมนู - ฿0</button>
         </div>
@@ -268,10 +305,48 @@
         <div id="orders-list-ui" style="padding:8px;"></div>
     </div>
 
-    <!-- Page: Manage -->
-    <div id="manage-page" class="page">
-        <div style="padding:20px;"><h2>จัดการหลังบ้าน</h2></div>
+    <!-- Page: Sales History -->
+    <div id="sales-page" class="page">
+        <div style="padding:16px 15px 8px;"><h2 style="font-size:17px; font-weight:800; color:var(--dark);">📊 ประวัติการขาย</h2></div>
         <div style="padding:0 15px;">
+
+            <!-- ===== CHART RANGE (shared) ===== -->
+            <div class="card" style="border-color:var(--gold); background:#fffcf5; padding:10px 12px;">
+                <div style="font-size:12px; font-weight:800; color:var(--secondary); margin-bottom:8px;">📅 ช่วงเวลากราฟ</div>
+                <div class="chart-range-bar">
+                    <button class="chart-range-btn active" id="cr-week"   onclick="setChartRange('week')">สัปดาห์ (7 วัน)</button>
+                    <button class="chart-range-btn"        id="cr-month"  onclick="setChartRange('month')">เดือน (30 วัน)</button>
+                    <button class="chart-range-btn"        id="cr-custom" onclick="setChartRange('custom')">กำหนดเอง 📆</button>
+                </div>
+                <div class="chart-custom-wrap" id="cr-custom-wrap">
+                    <div class="chart-custom-inputs">
+                        <div class="ci"><label>วันเริ่มต้น</label><input type="date" id="cr-start"></div>
+                        <div class="ci"><label>วันสิ้นสุด</label><input type="date" id="cr-end"></div>
+                        <button class="chart-apply-btn" onclick="renderCharts()">ดูกราฟ</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== CHART 1: Revenue ===== -->
+            <div class="card" style="border-color:#28a745; background:#f6fff8;">
+                <h4 style="font-size:14px; color:#1a7a30; margin-bottom:6px;">📈 ยอดขายรวมต่อวัน (฿)</h4>
+                <div class="chart-canvas-wrap"><canvas id="c-revenue"></canvas></div>
+            </div>
+
+            <!-- ===== CHART 2: Stock vs Sold ===== -->
+            <div class="card" style="border-color:var(--secondary); background:#fff8f0;">
+                <h4 style="font-size:14px; color:var(--secondary); margin-bottom:6px;">📦 ต้นทุน &amp; ยอดขายสินค้าต่อวัน</h4>
+                <select class="stock-item-select" id="cr-stock-item" onchange="renderStockChart()">
+                    <option value="soy">น้ำเต้าหู้เข้มข้น (ml)</option>
+                    <option value="ginger">น้ำขิง (ml)</option>
+                    <option value="sesame">ซุปงาดำ (ml)</option>
+                    <option value="custard">สังขยาใบเตย (ถ้วย)</option>
+                    <option value="patongko">ปาท่องโก๋ (ชิ้น)</option>
+                    <option value="mantou">หมั่นโถนมสด (ชิ้น)</option>
+                </select>
+                <div class="chart-canvas-wrap"><canvas id="c-stock"></canvas></div>
+            </div>
+
             <!-- Stock Input Section -->
             <div class="card" style="border-color: var(--gold); background: #fff;">
                 <h4 style="font-size: 14px; color: var(--secondary); margin-bottom: 10px;">📦 กำหนดจำนวนต้นทุนต่อวัน</h4>
@@ -284,10 +359,48 @@
                     <div class="stock-input-group"><label>6. หมั่นโถ (ชิ้น)</label><input type="number" id="stock-mantou" placeholder="0" onchange="saveStock()"></div>
                 </div>
             </div>
+            <!-- Sales Summary -->
             <div id="manage-summary-section" class="card" style="border-color: var(--gold); background: #fff;">
                 <h4 style="font-size: 14px; color: var(--secondary); margin-bottom: 5px;">📊 สรุปยอดคงเหลือ (ต้นทุน - ขาย = คงเหลือ)</h4>
                 <div id="item-sales-summary"></div>
             </div>
+            <!-- SNAPSHOT HISTORY -->
+            <div class="card" style="border-color: var(--secondary); background: #fff8f0; margin-bottom: 8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div>
+                        <h4 style="font-size:14px; color:var(--secondary);">📋 ประวัติต้นทุน & ยอดขายรายวัน</h4>
+                        <p style="font-size:10px; color:#aaa; margin-top:2px;">บันทึกอัตโนมัติ 23:59 ทุกวัน</p>
+                    </div>
+                    <button onclick="manualSaveSnapshot()" style="background:var(--secondary); color:white; border:none; padding:7px 12px; border-radius:8px; font-size:11px; font-weight:700; font-family:inherit; cursor:pointer;">💾 บันทึกวันนี้</button>
+                </div>
+                <div id="snapshot-history-list"><p style="font-size:12px; color:#bbb; text-align:center; padding:15px;">กำลังโหลด...</p></div>
+            </div>
+            <!-- 7-DAY HISTORY -->
+            <div class="card" style="border-color: var(--gold); background: #fffcf0; margin-bottom: 8px;">
+                <h4 style="font-size: 14px; color: var(--secondary); margin-bottom: 12px;">📅 ดูข้อมูลย้อนหลัง 7 วัน</h4>
+                <div class="hist-datepicker-row">
+                    <label>📆 วันที่สิ้นสุด:</label>
+                    <input type="date" id="history-anchor-date" onchange="buildWeekSummary()">
+                    <button class="btn-goto-today" onclick="gotoToday()">วันนี้</button>
+                </div>
+                <div id="week-summary-list"></div>
+            </div>
+            <!-- ล้างออเดอร์ -->
+            <div class="card" style="border-color: var(--danger); background: #fff5f5;">
+                <h4 style="font-size:13px; color:var(--danger); margin-bottom:10px;">🗑️ จัดการล้างออเดอร์</h4>
+                <p style="font-size:11px; color:#999; margin-bottom:10px;">คลิก "รายละเอียด" ของวันในส่วนด้านบนเพื่อเลือกวัน แล้วกดล้างด้านล่าง</p>
+                <input type="hidden" id="manage-date-filter">
+                <div id="selected-date-label" style="font-size:12px; color:var(--secondary); font-weight:700; margin-bottom:10px; padding:6px 10px; background:#fff; border-radius:8px; border:1px dashed var(--secondary);">ยังไม่ได้เลือกวัน</div>
+                <button class="btn-main" style="background:var(--secondary); margin-bottom:8px; font-size:13px;" onclick="clearOrdersByDate()">ล้างออเดอร์เฉพาะวันที่เลือก</button>
+                <button class="btn-main" style="background:var(--danger); font-size:13px;" onclick="clearAllOrders()">ล้างออเดอร์ทั้งหมดในระบบ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page: Manage -->
+    <div id="manage-page" class="page">
+        <div style="padding:16px 15px 8px;"><h2 style="font-size:17px; font-weight:800; color:var(--dark);">⚙️ จัดการหลังบ้าน</h2></div>
+        <div style="padding:0 15px;">
             <div class="card" style="margin:10px 0; border-style:solid; border-color:var(--gold); background: #fffcf5;">
                 <h4 style="margin-bottom:10px; font-size:14px;">ตั้งค่าข้อมูลร้าน</h4>
                 <button class="btn-main" style="background:var(--secondary); padding:10px; font-size:13px;" onclick="openShopEditModal()">✏️ แก้ไขชื่อ/รูป/QR รับเงิน</button>
@@ -300,27 +413,6 @@
                 <button class="btn-main" style="background:#666; font-size:13px;" onclick="document.getElementById('import-f').click()">📤 Import</button>
             </div>
             <input type="file" id="import-f" style="display:none" onchange="importData(this)">
-
-            <!-- 7-DAY HISTORY -->
-            <div class="card" style="border-color: var(--gold); background: #fffcf0; margin-bottom: 8px;">
-                <h4 style="font-size: 14px; color: var(--secondary); margin-bottom: 12px;">📅 ดูข้อมูลย้อนหลัง 7 วัน</h4>
-                <div class="hist-datepicker-row">
-                    <label>📆 วันที่สิ้นสุด:</label>
-                    <input type="date" id="history-anchor-date" onchange="buildWeekSummary()">
-                    <button class="btn-goto-today" onclick="gotoToday()">วันนี้</button>
-                </div>
-                <div id="week-summary-list"></div>
-            </div>
-
-            <!-- ล้างออเดอร์ -->
-            <div class="card" style="border-color: var(--danger); background: #fff5f5;">
-                <h4 style="font-size:13px; color:var(--danger); margin-bottom:10px;">🗑️ จัดการล้างออเดอร์</h4>
-                <p style="font-size:11px; color:#999; margin-bottom:10px;">คลิก "รายละเอียด" ของวันในส่วนด้านบนเพื่อเลือกวัน แล้วกดล้างด้านล่าง</p>
-                <input type="hidden" id="manage-date-filter">
-                <div id="selected-date-label" style="font-size:12px; color:var(--secondary); font-weight:700; margin-bottom:10px; padding:6px 10px; background:#fff; border-radius:8px; border:1px dashed var(--secondary);">ยังไม่ได้เลือกวัน</div>
-                <button class="btn-main" style="background:var(--secondary); margin-bottom:8px; font-size:13px;" onclick="clearOrdersByDate()">ล้างออเดอร์เฉพาะวันที่เลือก</button>
-                <button class="btn-main" style="background:var(--danger); font-size:13px;" onclick="clearAllOrders()">ล้างออเดอร์ทั้งหมดในระบบ</button>
-            </div>
         </div>
     </div>
 
@@ -387,10 +479,11 @@
 </div>
 
 <script>
-    const BASE_URL = "https://puretaoshop-default-rtdb.asia-southeast1.firebasedatabase.app/";
-    const CONTENT_URL = BASE_URL + "/content.json";
-    const ORDERS_URL = BASE_URL + "/orders.json";
-    const STOCK_URL  = BASE_URL + "/stock.json";
+    const BASE_URL      = "https://puretaoshop-default-rtdb.asia-southeast1.firebasedatabase.app/";
+    const CONTENT_URL   = BASE_URL + "/content.json";
+    const ORDERS_URL    = BASE_URL + "/orders.json";
+    const STOCK_URL     = BASE_URL + "/stock.json";
+    const SNAPSHOTS_URL = BASE_URL + "/snapshots.json";
 
     let db = {
         shop: { name:"PureTao", sub:"สดใหม่เพื่อสุขภาพ", logo:"", pp:"0000000000", qr_type:"promptpay", custom_qr:"" },
@@ -403,6 +496,8 @@
     let tempMImg = ""; let tempOImg = ""; let tempLogoImg = ""; let tempQRImg = "";
     let tempOpts = []; let isInitialLoadDone = false;
     let selectedWeekDate = null;
+    let snapshots = {};           // daily snapshots { "YYYY-MM-DD": {...} }
+    let lastAutoSnapshotDate = null; // prevent duplicate auto-saves
 
     // ---- History page: selected date ----
     let historyDate = new Date(); // JS Date object for history page
@@ -448,6 +543,12 @@
         historyDate = new Date();
         updateHistoryDateUI();
         setAnchorToToday();
+
+        // Auto-snapshot: ตรวจทุก 30 วิ
+        setInterval(checkAutoSnapshot, 30000);
+
+        // Recovery: กู้คืน snapshot ที่หายไป (admin only)
+        if (isAdmin) await checkMissingSnapshots();
     };
 
     // =============================================
@@ -591,7 +692,7 @@
                     <span class="status-badge ${o.status === 'ยกเลิก' ? 'bg-danger' : o.status === 'เสร็จสิ้น' ? 'bg-success' : 'bg-pending'}">${o.status}</span>
                 </div>
                 <div style="font-size:13px; margin-bottom:10px; line-height:1.4;
-                    ${o.status === 'ยกเลิก' ? 'text-decoration:line-through; color:#ccc;' : ''}">${o.items.join('<br>')}</div>
+                    ${o.status === 'ยกเลิก' ? 'text-decoration:line-through; color:#ccc;' : ''}">${o.items.map((it,idx) => `<b style="color:var(--secondary);margin-right:3px;">${idx+1}.</b> ${it.replace(/(x\d+)/, '<b>$1</b>')}`).join('<br>')}</div>
                 ${o.status === 'เสร็จสิ้น' ? `
                     <div class="qr-card">
                         <span class="pay-label">ยอดชำระ</span>
@@ -629,21 +730,27 @@
     async function loadDB() {
         document.getElementById('cloud-status').textContent = "Sync: Loading...";
         try {
-            const [cR, oR, sR] = await Promise.all([
-                fetch(CONTENT_URL + "?t=" + Date.now()),
-                fetch(ORDERS_URL  + "?t=" + Date.now()),
-                fetch(STOCK_URL   + "?t=" + Date.now())
+            const [cR, oR, sR, snR] = await Promise.all([
+                fetch(CONTENT_URL   + "?t=" + Date.now()),
+                fetch(ORDERS_URL    + "?t=" + Date.now()),
+                fetch(STOCK_URL     + "?t=" + Date.now()),
+                fetch(SNAPSHOTS_URL + "?t=" + Date.now())
             ]);
-            const cD = await cR.json(), oD = await oR.json(), sD = await sR.json();
+            const cD = await cR.json(), oD = await oR.json(), sD = await sR.json(), snD = await snR.json();
             if (cD) { db.shop = cD.shop || db.shop; db.menus = cD.menus || []; db.menus.sort((a,b) => (a.order||0)-(b.order||0)); }
             db.orders = oD || [];
             db.stock  = sD || db.stock;
+            snapshots = snD || {};
             document.getElementById('cloud-status').textContent = "Sync: Connected ✅";
         } catch (e) {
             document.getElementById('cloud-status').textContent = "Sync: Offline ⚠️";
-            const local = localStorage.getItem('puretao_v8.2_db');
-            if (local) db = JSON.parse(local);
+            const local = localStorage.getItem('puretao_v8.3_db');
+            if (local) { const p = JSON.parse(local); db = p.db || db; snapshots = p.snapshots || {}; }
         }
+    }
+
+    function saveLocal() {
+        localStorage.setItem('puretao_v8.3_db', JSON.stringify({ db, snapshots }));
     }
 
     async function saveContent() {
@@ -651,7 +758,7 @@
         document.getElementById('cloud-status').textContent = "Sync: Saving...";
         try {
             await fetch(CONTENT_URL, { method:'PUT', body: JSON.stringify({ shop: db.shop, menus: db.menus }) });
-            localStorage.setItem('puretao_v8.2_db', JSON.stringify(db));
+            saveLocal();
             document.getElementById('cloud-status').textContent = "Sync: Saved ✅";
         } catch (e) { document.getElementById('cloud-status').textContent = "Sync: Local Only 💾"; }
     }
@@ -661,9 +768,103 @@
         document.getElementById('cloud-status').textContent = "Sync: Updating Orders...";
         try {
             await fetch(ORDERS_URL, { method:'PUT', body: JSON.stringify(db.orders) });
-            localStorage.setItem('puretao_v8.2_db', JSON.stringify(db));
+            saveLocal();
             document.getElementById('cloud-status').textContent = "Sync: Saved ✅";
         } catch (e) { document.getElementById('cloud-status').textContent = "Sync: Local Only 💾"; }
+    }
+
+    // =============================================
+    //  DAILY SNAPSHOT SYSTEM
+    // =============================================
+
+    /** คำนวณ snapshot ของวันหนึ่งจากข้อมูล orders + stock ปัจจุบัน */
+    function calcDaySnapshot(isoDate, trigger) {
+        const thaiDate      = new Date(isoDate + 'T00:00:00').toLocaleDateString('th-TH');
+        const dayOrders     = (db.orders || []).filter(o => o.date === thaiDate);
+        const successOrders = dayOrders.filter(o => o.status === 'เสร็จสิ้น');
+        const cancelOrders  = dayOrders.filter(o => o.status === 'ยกเลิก');
+
+        let sold = { soy:0, ginger:0, sesame:0, custard:0, patongko:0, mantou:0 };
+        successOrders.forEach(o => {
+            if (!o.raw_details) return;
+            o.raw_details.forEach(bag => {
+                const q = bag.qty || 1;
+                if (bag.name.includes("น้ำเต้าหู้เข้มข้น")) sold.soy      += (bag.name.includes("400") ? 400 : 300) * q;
+                if (bag.name.includes("น้ำขิง"))             sold.ginger   += (bag.name.includes("400") ? 400 : 300) * q;
+                if (bag.name.includes("ซุปงาดำ"))            sold.sesame   += 250 * q;
+                if (bag.name.includes("สังขยา"))             sold.custard  += q;
+                if (bag.name.includes("ปาท่องโก๋"))         sold.patongko += q;
+                if (bag.name.includes("หมั่นโถ"))            sold.mantou   += q;
+            });
+        });
+
+        return {
+            date_thai  : thaiDate,
+            stock      : { ...db.stock },
+            sold,
+            revenue    : successOrders.reduce((a,b) => a + b.total, 0),
+            orders     : successOrders.length,
+            cancelled  : cancelOrders.length,
+            trigger    : trigger || 'auto',   // 'auto' | 'manual' | 'recovery'
+            saved_at   : new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' })
+        };
+    }
+
+    /** บันทึก snapshot ของวันหนึ่งลง Firebase */
+    async function saveSnapshot(isoDate, trigger) {
+        const snap = calcDaySnapshot(isoDate, trigger);
+        snapshots[isoDate] = snap;
+        try {
+            // PATCH = merge เฉพาะ key นั้น ไม่ล้างวันอื่น
+            await fetch(SNAPSHOTS_URL, { method:'PATCH', body: JSON.stringify({ [isoDate]: snap }) });
+            saveLocal();
+            console.log(`[Snapshot] saved ${isoDate} (${trigger})`);
+        } catch(e) {
+            saveLocal(); // at least save locally
+        }
+    }
+
+    /** เรียกทุก 30 วิ — บันทึกอัตโนมัติเวลา 23:59 */
+    function checkAutoSnapshot() {
+        if (!isAdmin || !isInitialLoadDone) return;
+        const now      = new Date();
+        const todayISO = isoFromDate(now);
+        if (now.getHours() === 23 && now.getMinutes() === 59 && lastAutoSnapshotDate !== todayISO) {
+            lastAutoSnapshotDate = todayISO;
+            saveSnapshot(todayISO, 'auto');
+            const cs = document.getElementById('cloud-status');
+            if (cs) cs.textContent = "Sync: Snapshot 23:59 ✅";
+        }
+    }
+
+    /** เรียกตอน load — กู้คืน snapshot ที่หายไปของวันก่อนหน้า */
+    async function checkMissingSnapshots() {
+        if (!isAdmin) return;
+        const today = new Date();
+        // ตรวจย้อนหลัง 7 วัน (เผื่อปิด app หลายวัน)
+        for (let i = 1; i <= 7; i++) {
+            const d   = new Date(today);
+            d.setDate(today.getDate() - i);
+            const iso = isoFromDate(d);
+            if (!snapshots[iso]) {
+                // มีออเดอร์วันนั้นหรือไม่
+                const thaiDate = d.toLocaleDateString('th-TH');
+                const hasOrders = (db.orders || []).some(o => o.date === thaiDate);
+                if (hasOrders) {
+                    await saveSnapshot(iso, 'recovery');
+                }
+            }
+        }
+        renderSnapshotHistory();
+    }
+
+    /** บันทึก snapshot วันนี้ทันที (ปุ่ม manual) */
+    async function manualSaveSnapshot() {
+        if (!isAdmin) return;
+        const todayISO = isoFromDate(new Date());
+        await saveSnapshot(todayISO, 'manual');
+        renderSnapshotHistory();
+        alert('✅ บันทึก snapshot วันนี้สำเร็จ');
     }
 
     async function saveStock() {
@@ -697,16 +898,24 @@
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(page).classList.add('active');
-        const tabKey = page === 'manage-page' ? 't-manage' : 't-' + page.split('-')[0];
-        document.getElementById(tabKey).classList.add('active');
+        const tabKey = page === 'manage-page' ? 't-manage'
+                     : page === 'sales-page'  ? 't-sales'
+                     : 't-' + page.split('-')[0];
+        const tabEl = document.getElementById(tabKey);
+        if (tabEl) tabEl.classList.add('active');
         await loadDB();
         if (page === 'order-page')   renderMenus();
         if (page === 'history-page') { updateHistoryDateUI(); renderOrders(); }
-        if (page === 'manage-page' && isAdmin) {
+        if (page === 'sales-page' && isAdmin) {
             updateStockUI();
             setAnchorToToday();
             buildWeekSummary();
             updateSalesSummary();
+            renderSnapshotHistory();
+            setTimeout(renderCharts, 80);
+        }
+        if (page === 'manage-page' && isAdmin) {
+            // manage page no longer has stock/summary sections
         }
     }
 
@@ -812,12 +1021,12 @@
 
         html += orders.map(o => {
             const statusColor = o.status === 'ยกเลิก' ? 'var(--danger)' : o.status === 'เสร็จสิ้น' ? 'var(--success)' : 'var(--pending)';
-            const itemsHtml = (o.raw_details || []).map(bag => {
+            const itemsHtml = (o.raw_details || []).map((bag,bi) => {
                 const toppingStr = bag.toppings && bag.toppings.length > 0
                     ? ` <span style="color:var(--gold); font-size:10px;">[${bag.toppings.join(', ')}]</span>` : '';
-                return `<div class="order-item-line">${bag.name}${toppingStr} x${bag.qty}</div>`;
+                return `<div class="order-item-line"><b style="color:var(--secondary);margin-right:3px;">${bi+1}.</b> ${bag.name}${toppingStr} <b>x${bag.qty}</b></div>`;
             }).join('');
-            const fallback = itemsHtml || (o.items || []).map(it => `<div class="order-item-line">${it}</div>`).join('');
+            const fallback = itemsHtml || (o.items || []).map((it,fi) => `<div class="order-item-line"><b style="color:var(--secondary);margin-right:3px;">${fi+1}.</b> ${it.replace(/(x\d+)/, '<b>$1</b>')}</div>`).join('');
             return `<div class="order-detail-card">
                 <div class="order-header">
                     <div>
@@ -848,66 +1057,70 @@
         }
         list.innerHTML = db.menus.map((m, index) => {
             const sel      = activeSelection[m.id] || { opts: [] };
-            const totalQty = bags.filter(b => b.id === m.id && b.opts.length === 0).reduce((a,b) => a + b.qty, 0);
+            const inCart   = bags.filter(b => b.id === m.id).reduce((s,b) => s + b.qty, 0);
+            const cartBadge = inCart > 0
+                ? `<span style="background:var(--gold);color:white;border-radius:10px;padding:1px 8px;font-size:10px;font-weight:700;margin-left:6px;">🛒 ${inCart}</span>`
+                : '';
+            const hasToppings = m.options && m.options.length > 0;
+            const addBtnLabel = sel.opts.length > 0
+                ? `+ เพิ่มลงตะกร้า <small style="opacity:.8">(+${sel.opts.length} ท็อปปิ้ง)</small>`
+                : '+ เพิ่มลงตะกร้า';
+
             return `<div class="card" id="menu-card-${m.id}">
                 <div style="display:flex; gap:12px; align-items:center;">
                     <img src="${m.img || 'https://via.placeholder.com/100'}" style="width:75px; height:75px; border-radius:12px; object-fit:cover;" onclick="zoom('${m.img}')">
-                    <div style="flex:1">
-                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                            <b style="font-size:15px; line-height:1.2;">${m.name}</b>
-                            ${isAdmin ? `<div style="display:flex; gap:5px; align-items:center;">
+                    <div style="flex:1; min-width:0;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:4px;">
+                            <div style="min-width:0;">
+                                <b style="font-size:15px; line-height:1.3;">${m.name}</b>${cartBadge}
+                            </div>
+                            ${isAdmin ? `<div style="display:flex; gap:5px; align-items:center; flex-shrink:0;">
                                 <span onclick="moveMenu(${index}, -1)" style="font-size:18px;">⬆️</span>
                                 <span onclick="moveMenu(${index}, 1)" style="font-size:18px;">⬇️</span>
                                 <span onclick="editMenu(${m.id})" style="color:#007bff; font-size:11px; font-weight:600; margin-left:5px;">แก้</span>
                                 <span onclick="delMenu(${m.id})" style="color:red; font-size:11px; font-weight:600;">ลบ</span>
                             </div>` : ''}
                         </div>
-                        <div style="color:var(--secondary); font-weight:700; font-size:17px; margin:2px 0;">฿${m.price}</div>
-                        <div style="display:flex; justify-content:flex-end;">
-                            <div style="display:flex; align-items:center; gap:10px; background:#F8F9FA; padding:2px 8px; border-radius:20px; border:1px solid #eee;">
-                                <button class="qty-btn" onclick="quickAddNormal(${m.id},-1)">-</button>
-                                <b id="qty-${m.id}" style="font-size:16px; min-width:15px; text-align:center;">${totalQty}</b>
-                                <button class="qty-btn" onclick="quickAddNormal(${m.id},1)">+</button>
-                            </div>
-                        </div>
+                        <div style="color:var(--secondary); font-weight:700; font-size:17px; margin:4px 0 6px;">฿${m.price}</div>
+                        <button class="btn-add-bag" onclick="addToCartAny(${m.id})"
+                            style="width:100%; font-size:13px; padding:9px 12px; border-radius:10px;">${addBtnLabel}</button>
                     </div>
                 </div>
-                ${m.options && m.options.length > 0 ? `
-                <div class="topping-container">${m.options.map(o => `
-                    <div class="topping-item" onclick="handleToppingClick(event, ${m.id}, '${o.name}')">
-                        <div class="topping-left">
-                            <input type="checkbox" id="opt-${m.id}-${o.name}" ${sel.opts.includes(o.name) ? 'checked' : ''}>
-                            ${o.img ? `<img src="${o.img}" class="topping-img" onclick="event.stopPropagation(); zoom('${o.img}')">` : ''}
-                            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60px;">${o.name}</span>
-                            <span class="topping-price">฿${o.price}</span>
-                        </div>
-                    </div>`).join('')}
-                </div>
-                <button class="btn-add-bag" id="btn-add-special-${m.id}" onclick="addToBagSpecial(${m.id})"
-                    style="display:${sel.opts.length > 0 ? 'block' : 'none'}">+ เพิ่มลงตะกร้า (แยกถุงพิเศษ)</button>` : ''}
+                ${hasToppings ? `
+                <div style="margin-top:10px;">
+                    <div style="font-size:11px; color:var(--secondary); font-weight:700; margin-bottom:6px;">เลือกท็อปปิ้ง (ไม่บังคับ)</div>
+                    <div class="topping-container">${m.options.map(o => `
+                        <div class="topping-item" onclick="handleToppingClick(event, ${m.id}, '${o.name}')">
+                            <div class="topping-left">
+                                <input type="checkbox" id="opt-${m.id}-${o.name}" ${sel.opts.includes(o.name) ? 'checked' : ''}>
+                                ${o.img ? `<img src="${o.img}" class="topping-img" onclick="event.stopPropagation(); zoom('${o.img}')">` : ''}
+                                <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60px;">${o.name}</span>
+                                <span class="topping-price">฿${o.price}</span>
+                            </div>
+                        </div>`).join('')}
+                    </div>
+                </div>` : ''}
             </div>`;
         }).join('');
         calculateTotal();
     }
 
-    function quickAddNormal(menuId, delta) {
-        const menu     = db.menus.find(m => m.id === menuId);
-        let bagIndex   = bags.findIndex(b => b.id === menuId && b.opts.length === 0);
-        if (bagIndex > -1) { bags[bagIndex].qty += delta; if (bags[bagIndex].qty <= 0) bags.splice(bagIndex, 1); }
-        else if (delta > 0) { bags.push({ id: menu.id, name: menu.name, price: menu.price, qty: 1, opts: [], optPrice: 0 }); }
-        renderMenus();
-    }
-
-    function addToBagSpecial(menuId) {
+    /** รวมการเพิ่มสินค้าทุกประเภท (มีหรือไม่มีท็อปปิ้ง) ด้วยปุ่มเดียว */
+    function addToCartAny(menuId) {
         const menu = db.menus.find(m => m.id === menuId);
-        const sel  = activeSelection[menuId];
-        if (!sel || sel.opts.length === 0) return;
+        if (!menu) return;
+        const sel = activeSelection[menuId] || { opts: [] };
         let optPrice = 0;
-        menu.options.forEach(o => { if (sel.opts.includes(o.name)) optPrice += o.price; });
-        let bagIndex = bags.findIndex(b => b.id === menuId && JSON.stringify(b.opts.sort()) === JSON.stringify(sel.opts.sort()));
-        if (bagIndex > -1) bags[bagIndex].qty += 1;
-        else bags.push({ id: menu.id, name: menu.name, price: menu.price, qty: 1, opts: [...sel.opts], optPrice });
-        activeSelection[menuId].opts = [];
+        if (menu.options) menu.options.forEach(o => { if (sel.opts.includes(o.name)) optPrice += o.price; });
+        const key = JSON.stringify([...sel.opts].sort());
+        let bagIndex = bags.findIndex(b => b.id === menuId && JSON.stringify([...b.opts].sort()) === key);
+        if (bagIndex > -1) {
+            bags[bagIndex].qty += 1;
+        } else {
+            bags.push({ id: menu.id, name: menu.name, price: menu.price, qty: 1, opts: [...sel.opts], optPrice });
+        }
+        if (!activeSelection[menuId]) activeSelection[menuId] = { opts: [] };
+        activeSelection[menuId].opts = [];   // reset topping selection
         renderMenus();
     }
 
@@ -925,7 +1138,7 @@
             const itemTotal = (b.price + b.optPrice) * b.qty;
             total += itemTotal;
             summaryHtml += `<div class="cart-item-row">
-                <span><b>${b.qty}x</b> ${b.name}${b.opts.length > 0 ? ' <small>(ถุงพิเศษ: ' + b.opts.join(',') + ')</small>' : ''}</span>
+                <span><b style='color:var(--secondary)'>${index+1}.</b> ${b.name}${b.opts.length > 0 ? ' <small>(ถุงพิเศษ: ' + b.opts.join(',') + ')</small>' : ''} <b>x${b.qty}</b></span>
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span>฿${itemTotal}</span>
                     <span onclick="removeBag(${index})" style="color:red; font-weight:bold; font-size:16px; padding:0 4px;">✕</span>
@@ -941,6 +1154,7 @@
         } else {
             preview.style.display = 'none'; btn.disabled = true; btn.textContent = "กรุณาเลือกเมนู";
         }
+        requestAnimationFrame(function(){ var bar=document.getElementById('order-bottom-bar'); var page=document.getElementById('order-page'); if(bar&&page) page.style.paddingBottom=(bar.offsetHeight+16)+'px'; });
     }
 
     function removeBag(index) { bags.splice(index, 1); renderMenus(); }
@@ -970,6 +1184,88 @@
         alert('✅ ส่งรายการอาหารสำเร็จ');
         historyDate = new Date(); // go to today
         navTo('history-page');
+    }
+
+    // =============================================
+    //  SNAPSHOT HISTORY RENDER
+    // =============================================
+    function renderSnapshotHistory() {
+        const container = document.getElementById('snapshot-history-list');
+        if (!container) return;
+
+        const entries = Object.entries(snapshots).sort((a, b) => b[0].localeCompare(a[0])); // newest first
+        if (entries.length === 0) {
+            container.innerHTML = '<p style="font-size:12px; color:#bbb; text-align:center; padding:15px;">ยังไม่มีข้อมูล — จะบันทึกครั้งแรกเวลา 23:59</p>';
+            return;
+        }
+
+        const stockItems = [
+            { id:'soy',      label:'น้ำเต้าหู้เข้มข้น', unit:'ml'   },
+            { id:'ginger',   label:'น้ำขิง',              unit:'ml'   },
+            { id:'sesame',   label:'ซุปงาดำ',             unit:'ml'   },
+            { id:'custard',  label:'สังขยาใบเตย',         unit:'ถ้วย' },
+            { id:'patongko', label:'ปาท่องโก๋',           unit:'ชิ้น' },
+            { id:'mantou',   label:'หมั่นโถนมสด',         unit:'ชิ้น' }
+        ];
+
+        container.innerHTML = entries.map(([isoDate, snap]) => {
+            const d        = new Date(isoDate + 'T00:00:00');
+            const isToday  = isoDate === isoFromDate(new Date());
+            const dayLabel = isToday
+                ? `🔔 วันนี้ — ${thDaysShort[d.getDay()]} ${d.getDate()} ${thMonths[d.getMonth()]} ${d.getFullYear()+543}`
+                : `${thDaysShort[d.getDay()]} ${d.getDate()} ${thMonths[d.getMonth()]} ${d.getFullYear()+543}`;
+            const badge = snap.trigger === 'auto'     ? '<span class="snap-auto-badge">อัตโนมัติ</span>'
+                        : snap.trigger === 'recovery' ? '<span class="snap-manual-badge">กู้คืน</span>'
+                        : '<span class="snap-manual-badge">manual</span>';
+
+            const detailRows = stockItems.map(item => {
+                const cost   = (snap.stock && snap.stock[item.id]) || 0;
+                const sold   = (snap.sold  && snap.sold[item.id])  || 0;
+                const remain = cost - sold;
+                return `<tr>
+                    <td>${item.label}</td>
+                    <td>${cost}</td>
+                    <td style="color:var(--danger);">${sold}</td>
+                    <td style="font-weight:700; ${remain < 0 ? 'color:red;' : remain === 0 && cost > 0 ? 'color:#888;' : ''}">${remain} ${item.unit}</td>
+                </tr>`;
+            }).join('');
+
+            return `<div class="snap-row" id="snaprow-${isoDate}">
+                <div class="snap-row-main">
+                    <div class="snap-row-date">
+                        <div class="sd-label">${dayLabel}${badge}</div>
+                        <div class="sd-sub">บันทึก ${snap.saved_at || ''}</div>
+                    </div>
+                    <div class="snap-row-stats">
+                        <div class="sr-revenue">฿${(snap.revenue || 0).toLocaleString()}</div>
+                        <div class="sr-count">${snap.orders || 0} สำเร็จ${snap.cancelled > 0 ? ` · ${snap.cancelled} ยกเลิก` : ''}</div>
+                    </div>
+                    <button class="btn-snap-detail" id="snapbtn-${isoDate}"
+                        onclick="toggleSnapDetail('${isoDate}')">รายละเอียด</button>
+                </div>
+                <div class="snap-detail-wrap" id="snapdetail-${isoDate}">
+                    <table class="snap-detail-table">
+                        <thead><tr><th>สินค้า</th><th>ต้นทุน</th><th>ขายไป</th><th>คงเหลือ</th></tr></thead>
+                        <tbody>${detailRows}</tbody>
+                    </table>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function toggleSnapDetail(isoDate) {
+        const wrap = document.getElementById(`snapdetail-${isoDate}`);
+        const btn  = document.getElementById(`snapbtn-${isoDate}`);
+        if (!wrap) return;
+        const isOpen = wrap.classList.contains('show');
+        // close all
+        document.querySelectorAll('.snap-detail-wrap.show').forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('.btn-snap-detail.open').forEach(el => { el.classList.remove('open'); el.textContent = 'รายละเอียด'; });
+        if (!isOpen) {
+            wrap.classList.add('show');
+            btn.classList.add('open');
+            btn.textContent = 'ซ่อน';
+        }
     }
 
     // =============================================
@@ -1164,8 +1460,13 @@
     function enableRoleMode(r) {
         const b = document.getElementById('role-badge'); b.style.display = 'block'; b.textContent = r;
         document.getElementById('btn-logout-main').style.display = 'block';
-        if (r === 'เจ้าของร้าน') { document.getElementById('t-manage').style.display = 'flex'; document.getElementById('manage-summary-section').style.display = 'block'; }
-        else { document.getElementById('manage-summary-section').style.display = 'none'; }
+        if (r === 'เจ้าของร้าน') {
+            document.getElementById('t-sales').style.display  = 'flex';
+            document.getElementById('t-manage').style.display = 'flex';
+            document.getElementById('manage-summary-section').style.display = 'block';
+        } else {
+            document.getElementById('manage-summary-section').style.display = 'none';
+        }
     }
 
     // =============================================
@@ -1219,6 +1520,199 @@
             alert(`ล้างออเดอร์วันที่ ${targetDateStr} สำเร็จ`);
         }
     }
+
+    // =============================================
+    //  PURE-CANVAS CHART SYSTEM (no external CDN)
+    // =============================================
+    var chartRange = 'week';
+
+    function setChartRange(r) {
+        chartRange = r;
+        ['week','month','custom'].forEach(function(t){
+            var b = document.getElementById('cr-'+t);
+            if (b) { b.classList.toggle('active', t===r); }
+        });
+        var cw = document.getElementById('cr-custom-wrap');
+        if (cw) {
+            if (r === 'custom') {
+                cw.classList.add('show');
+                var today = new Date();
+                var d7 = new Date(); d7.setDate(today.getDate()-6);
+                var si = document.getElementById('cr-start');
+                var ei = document.getElementById('cr-end');
+                if (si && !si.value) si.value = isoFromDate(d7);
+                if (ei && !ei.value) ei.value = isoFromDate(today);
+            } else {
+                cw.classList.remove('show');
+                renderCharts();
+            }
+        }
+    }
+
+    function getChartDates() {
+        var today = new Date(); var dates = [];
+        if (chartRange === 'custom') {
+            var sv = document.getElementById('cr-start'); var ev = document.getElementById('cr-end');
+            if (!sv || !sv.value || !ev || !ev.value) return [];
+            var s = new Date(sv.value+'T00:00:00'); var e = new Date(ev.value+'T00:00:00');
+            if (s > e) return [];
+            for (var d = new Date(s); d <= e; d.setDate(d.getDate()+1)) dates.push(isoFromDate(new Date(d)));
+        } else {
+            var days = chartRange === 'month' ? 30 : 7;
+            for (var i = days-1; i >= 0; i--) { var d2=new Date(today); d2.setDate(today.getDate()-i); dates.push(isoFromDate(d2)); }
+        }
+        return dates;
+    }
+
+    function cLabel(iso) { var d=new Date(iso+'T00:00:00'); return d.getDate()+' '+thMonths[d.getMonth()]; }
+
+    function getRevForISO(iso) {
+        var td=new Date(iso+'T00:00:00').toLocaleDateString('th-TH');
+        return (db.orders||[]).filter(function(o){return o.date===td&&o.status==='เสร็จสิ้น';}).reduce(function(s,o){return s+o.total;},0);
+    }
+    function getOrdForISO(iso) {
+        var td=new Date(iso+'T00:00:00').toLocaleDateString('th-TH');
+        return (db.orders||[]).filter(function(o){return o.date===td&&o.status==='เสร็จสิ้น';}).length;
+    }
+    function getSoldForISO(iso,item) {
+        if (snapshots[iso]&&snapshots[iso].sold&&snapshots[iso].sold[item]!==undefined) return snapshots[iso].sold[item];
+        var td=new Date(iso+'T00:00:00').toLocaleDateString('th-TH'); var sold=0;
+        (db.orders||[]).filter(function(o){return o.date===td&&o.status==='เสร็จสิ้น';}).forEach(function(o){
+            if(!o.raw_details)return;
+            o.raw_details.forEach(function(bag){
+                var q=bag.qty||1;
+                if(item==='soy'&&bag.name.indexOf('น้ำเต้าหู้')>-1)     sold+=(bag.name.indexOf('400')>-1?400:300)*q;
+                if(item==='ginger'&&bag.name.indexOf('น้ำขิง')>-1)       sold+=(bag.name.indexOf('400')>-1?400:300)*q;
+                if(item==='sesame'&&bag.name.indexOf('ซุปงาดำ')>-1)      sold+=250*q;
+                if(item==='custard'&&bag.name.indexOf('สังขยา')>-1)      sold+=q;
+                if(item==='patongko'&&bag.name.indexOf('ปาท่องโก๋')>-1) sold+=q;
+                if(item==='mantou'&&bag.name.indexOf('หมั่นโถ')>-1)      sold+=q;
+            });
+        });
+        return sold;
+    }
+
+    function renderCharts() { renderRevenueChart(); renderStockChart(); }
+
+    /** วาดกราฟแท่งลงบน canvas ด้วย Canvas 2D API โดยตรง */
+    function drawBars(canvasId, datasets, labels, yFmt) {
+        var canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        var W = canvas.parentElement.offsetWidth || 300;
+        var H = 200;
+        canvas.width  = W;
+        canvas.height = H;
+        var ctx = canvas.getContext('2d');
+
+        var ML=46, MR=8, MT=28, MB=38;
+        var CW=W-ML-MR, CH=H-MT-MB;
+
+        ctx.clearRect(0,0,W,H);
+
+        var allVals = datasets.reduce(function(a,ds){return a.concat(ds.data);},[]); 
+        var maxV = Math.max.apply(null, allVals.concat([1]));
+        var niceMax = Math.ceil(maxV/5)*5; if(niceMax===0) niceMax=10;
+
+        // grid + y-labels
+        ctx.font = '9px sans-serif'; ctx.textAlign='right'; ctx.textBaseline='middle';
+        for (var gi=0;gi<=5;gi++) {
+            var gy = MT + CH - (gi/5)*CH;
+            var gv = (gi/5)*niceMax;
+            ctx.strokeStyle='#efefef'; ctx.lineWidth=1;
+            ctx.beginPath(); ctx.moveTo(ML,gy); ctx.lineTo(ML+CW,gy); ctx.stroke();
+            ctx.fillStyle='#aaa';
+            ctx.fillText(yFmt ? yFmt(gv) : (gv>=1000?(gv/1000).toFixed(1)+'k':Math.round(gv)), ML-4, gy);
+        }
+        // x-axis line
+        ctx.strokeStyle='#ddd'; ctx.lineWidth=1.5;
+        ctx.beginPath(); ctx.moveTo(ML,MT+CH); ctx.lineTo(ML+CW,MT+CH); ctx.stroke();
+
+        // bars
+        var n=labels.length; var nd=datasets.length;
+        var groupW=CW/n; var barPad=groupW<20?1:3;
+        var barW=Math.max(2,(groupW-barPad*2)/nd-1);
+
+        datasets.forEach(function(ds,di){
+            ds.data.forEach(function(val,i){
+                var x=ML+i*groupW+barPad+di*(barW+1);
+                var bh=Math.max(0,(val/niceMax)*CH);
+                var by=MT+CH-bh;
+                ctx.fillStyle=ds.color;
+                // rounded top corners
+                var r=Math.min(3,barW/2,bh/2);
+                ctx.beginPath();
+                if(bh>0){
+                    ctx.moveTo(x+r,by); ctx.lineTo(x+barW-r,by);
+                    ctx.arcTo(x+barW,by,x+barW,by+r,r);
+                    ctx.lineTo(x+barW,by+bh); ctx.lineTo(x,by+bh);
+                    ctx.lineTo(x,by+r); ctx.arcTo(x,by,x+r,by,r);
+                    ctx.closePath(); ctx.fill();
+                }
+            });
+        });
+
+        // x labels
+        ctx.fillStyle='#888'; ctx.font='9px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='top';
+        labels.forEach(function(lbl,i){
+            var x=ML+i*groupW+groupW/2;
+            ctx.save(); ctx.translate(x,MT+CH+4);
+            if(n>14){ctx.rotate(-Math.PI/4); ctx.textAlign='right';}
+            ctx.fillText(lbl,0,0);
+            ctx.restore();
+        });
+
+        // legend (if multiple datasets)
+        if(nd>1){
+            ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.font='10px sans-serif';
+            var lx=ML;
+            datasets.forEach(function(ds){
+                ctx.fillStyle=ds.color; ctx.fillRect(lx,8,10,9);
+                ctx.fillStyle='#555'; ctx.fillText(ds.label,lx+13,12);
+                lx+=ctx.measureText(ds.label).width+28;
+            });
+        }
+    }
+
+    function renderRevenueChart() {
+        var dates  = getChartDates();
+        var labels = dates.map(cLabel);
+        var rev    = dates.map(getRevForISO);
+        var ords   = dates.map(getOrdForISO);
+        if (dates.length === 0) { clearCanvas('c-revenue','📅 เลือกช่วงวันที่ แล้วกด "ดูกราฟ"'); return; }
+        drawBars('c-revenue',
+            [{ label:'ยอดขาย (฿)', data:rev, color:'rgba(40,167,69,0.82)' }],
+            labels,
+            function(v){ return v>=1000?(v/1000).toFixed(1)+'k':'฿'+v; }
+        );
+    }
+
+    function renderStockChart() {
+        var sel  = document.getElementById('cr-stock-item');
+        var item = sel ? sel.value : 'soy';
+        var dates = getChartDates();
+        var labels = dates.map(cLabel);
+        if (dates.length === 0) { clearCanvas('c-stock','📅 เลือกช่วงวันที่ แล้วกด "ดูกราฟ"'); return; }
+        var cost = dates.map(function(iso){ return (snapshots[iso]&&snapshots[iso].stock)?snapshots[iso].stock[item]||0:0; });
+        var sold = dates.map(function(iso){ return getSoldForISO(iso,item); });
+        drawBars('c-stock',
+            [{ label:'ต้นทุน', data:cost, color:'rgba(212,175,55,0.85)' },
+             { label:'ขายไป', data:sold, color:'rgba(220,53,69,0.80)' }],
+            labels, null
+        );
+    }
+
+    function clearCanvas(id, msg) {
+        var canvas = document.getElementById(id); if(!canvas) return;
+        var W=canvas.parentElement.offsetWidth||300; var H=200;
+        canvas.width=W; canvas.height=H;
+        var ctx=canvas.getContext('2d');
+        ctx.clearRect(0,0,W,H);
+        ctx.fillStyle='#ccc'; ctx.font='13px sans-serif';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(msg,W/2,H/2);
+    }
+
 </script>
 </body>
 </html>
+        
