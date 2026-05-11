@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Puretao v9.0 - Stock System</title>
+    <title>Puretao v9.1 - Stock System</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #D4AF37; --dark: #2D1400; --cream: #FAF7F2; --white: #FFFFFF; --border: #E8D5C4; --secondary: #8B4513; --success: #28a745; --pending: #ffc107; --danger: #dc3545; }
@@ -425,7 +425,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <div>
                         <h4 style="font-size:14px; color:var(--secondary);">📋 ประวัติต้นทุน & ยอดขายรายวัน</h4>
-                        <p style="font-size:10px; color:#aaa; margin-top:2px;">บันทึกอัตโนมัติ 23:59 ทุกวัน</p>
+                        <p style="font-size:10px; color:#aaa; margin-top:2px;">บันทึกอัตโนมัติ 06:00 ทุกวัน</p>
                     </div>
                     <button onclick="manualSaveSnapshot()" style="background:var(--secondary); color:white; border:none; padding:7px 12px; border-radius:8px; font-size:11px; font-weight:700; font-family:inherit; cursor:pointer;">💾 บันทึกวันนี้</button>
                 </div>
@@ -442,7 +442,6 @@
                         style="flex:1; padding:8px; font-size:13px; margin-bottom:0; border:1px solid var(--border); border-radius:8px;">
                 </div>
                 <input type="hidden" id="manage-date-filter">
-                <div id="selected-date-label" style="font-size:12px; color:var(--secondary); font-weight:700; margin-bottom:10px; padding:6px 10px; background:#fff; border-radius:8px; border:1px dashed var(--secondary);">ยังไม่ได้เลือกวัน</div>
                 <button class="btn-main" style="background:var(--secondary); margin-bottom:8px; font-size:13px;" onclick="clearOrdersByDate()">ล้างออเดอร์เฉพาะวันที่เลือก</button>
                 <button class="btn-main" style="background:var(--danger); font-size:13px;" onclick="clearAllOrders()">ล้างออเดอร์ทั้งหมดในระบบ</button>
             </div>
@@ -621,7 +620,7 @@
 
         // Set today as default for clear orders date picker
         const pickerEl = document.getElementById('manage-date-filter-picker');
-        if (pickerEl) pickerEl.value = isoFromDate(new Date());
+        if (pickerEl) { pickerEl.value = isoFromDate(new Date()); onClearDateChange(pickerEl.value); }
 
         setInterval(checkAutoSnapshot, 30000);
         if (isAdmin) await checkMissingSnapshots();
@@ -635,7 +634,6 @@
         const d = new Date(isoVal + 'T00:00:00');
         const thaiDateStr = d.toLocaleDateString('th-TH');
         document.getElementById('manage-date-filter').value = isoVal;
-        document.getElementById('selected-date-label').textContent = `วันที่เลือก: ${thaiDateStr}`;
     }
 
     // =============================================
@@ -783,7 +781,7 @@
                     <div style="display:flex; gap:6px;">
                         ${(isAdmin || isStaff) && o.status === 'รอดำเนินการ'
                             ? `<button onclick="updateStatus(${o.id}, 'เสร็จสิ้น')" style="background:var(--success); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px;">สำเร็จ</button>` : ''}
-                        ${o.status === 'รอดำเนินการ'
+                        ${(o.status !== 'ยกเลิก' && (isAdmin || o.status === 'รอดำเนินการ'))
                             ? `<button onclick="updateStatus(${o.id}, 'ยกเลิก')" style="background:#f1f1f1; color:#666; border:none; padding:6px 12px; border-radius:8px; font-size:11px;">ยกเลิก</button>` : ''}
                     </div>
                 </div>
@@ -826,13 +824,13 @@
             document.getElementById('cloud-status').textContent = "Sync: Connected ✅";
         } catch (e) {
             document.getElementById('cloud-status').textContent = "Sync: Offline ⚠️";
-            const local = localStorage.getItem('puretao_v9.0_db');
+            const local = localStorage.getItem('puretao_v9.1_db');
             if (local) { const p = JSON.parse(local); db = p.db || db; snapshots = p.snapshots || {}; }
         }
     }
 
     function saveLocal() {
-        localStorage.setItem('puretao_v9.0_db', JSON.stringify({ db, snapshots }));
+        localStorage.setItem('puretao_v9.1_db', JSON.stringify({ db, snapshots }));
     }
 
     async function saveContent() {
@@ -870,9 +868,9 @@
             if (!o.raw_details) return;
             o.raw_details.forEach(bag => {
                 const q = bag.qty || 1;
-                if (bag.name.includes("น้ำเต้าหู้")) sold.soy      += (bag.name.includes("400") ? 400 : 300) * q;
-                if (bag.name.includes("น้ำขิง"))     sold.ginger   += (bag.name.includes("400") ? 400 : 300) * q;
-                if (bag.name.includes("ซุปงาดำ"))    sold.sesame   += 250 * q;
+                if (bag.name.includes("น้ำเต้าหู้")) sold.soy      += (bag.ml > 0 ? bag.ml : (bag.name.includes("400") ? 400 : 300)) * q;
+                if (bag.name.includes("น้ำขิง"))     sold.ginger   += (bag.ml > 0 ? bag.ml : (bag.name.includes("400") ? 400 : 300)) * q;
+                if (bag.name.includes("ซุปงาดำ"))    sold.sesame   += (bag.ml > 0 ? bag.ml : 250) * q;
                 if (bag.name.includes("สังขยา"))     sold.custard  += q;
                 if (bag.name.includes("ปาท่องโก๋")) sold.patongko += q;
                 if (bag.name.includes("หมั่นโถ"))    sold.mantou   += q;
@@ -915,7 +913,7 @@
         if (!isAdmin || !isInitialLoadDone) return;
         const now      = new Date();
         const todayISO = isoFromDate(now);
-        if (now.getHours() === 23 && now.getMinutes() === 59 && lastAutoSnapshotDate !== todayISO) {
+        if (now.getHours() === 6 && now.getMinutes() === 0 && lastAutoSnapshotDate !== todayISO) {
             lastAutoSnapshotDate = todayISO;
             saveSnapshot(todayISO, 'auto');
         }
@@ -1160,7 +1158,7 @@
                 : '+ เพิ่มลงตะกร้า';
             return `<div class="card" id="menu-card-${m.id}">
                 <div style="display:flex; gap:12px; align-items:center;">
-                    <img src="${m.img || 'https://via.placeholder.com/100'}" style="width:75px; height:75px; border-radius:12px; object-fit:cover;" onclick="zoom('${m.img}')">
+                    <img src="${m.img || 'https://via.placeholder.com/100'}" style="width:86px; height:86px; border-radius:12px; object-fit:cover;" onclick="zoom('${m.img}')">
                     <div style="flex:1; min-width:0;">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:4px;">
                             <div style="min-width:0;">
@@ -1173,14 +1171,15 @@
                                 <span onclick="delMenu(${m.id})" style="color:red; font-size:11px; font-weight:600;">ลบ</span>
                             </div>` : ''}
                         </div>
-                        <div style="color:var(--secondary); font-weight:700; font-size:17px; margin:4px 0 6px;">฿${m.price}</div>
-                        <button class="btn-add-bag" onclick="addToCartAny(${m.id})"
-                            style="width:100%; font-size:13px; padding:9px 12px; border-radius:10px;">${addBtnLabel}</button>
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin:4px 0 0; gap:6px;">
+                            <div style="color:var(--secondary); font-weight:700; font-size:17px;">฿${m.price}</div>
+                            <button class="btn-add-bag" onclick="addToCartAny(${m.id})"
+                                style="width:auto; font-size:11px; padding:6px 10px; border-radius:8px; flex-shrink:0;">${addBtnLabel}</button>
+                        </div>
                     </div>
                 </div>
                 ${hasToppings ? `
                 <div style="margin-top:10px;">
-                    <div style="font-size:11px; color:var(--secondary); font-weight:700; margin-bottom:6px;">เลือกท็อปปิ้ง (ไม่บังคับ)</div>
                     <div class="topping-container">${m.options.map(o => `
                         <div class="topping-item" onclick="handleToppingClick(event, ${m.id}, '${o.name}')">
                             <div class="topping-left">
@@ -1193,9 +1192,75 @@
                     </div>
                 </div>` : ''}
             </div>`;
-        }).join('');
+        }).join('') + renderCustomItemCard();
         calculateTotal();
     }
+
+    // ──────── Custom "อื่นๆ" item ────────────────────────────────────────────────
+    window._customItem = { name: '', price: 0, qty: 1, ml: 0 };
+
+    function renderCustomItemCard() {
+        const ci = window._customItem;
+        const datalistOptions = (db.menus || []).map(m =>
+            `<option value="${m.name}">`
+        ).join('');
+
+        return `<div class="card" style="border:2px dashed var(--gold); margin-top:12px;">
+            <datalist id="menu-names-list">${datalistOptions}</datalist>
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+                <div style="width:86px;height:86px;border-radius:12px;background:linear-gradient(135deg,#f5e6b0,#ffd966);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:28px;">✨</div>
+                <div style="flex:1; min-width:0;">
+                    <b style="font-size:13px; color:#aaa;">รายการอื่นๆ</b>
+                    <input id="custom-name-input" type="text" list="menu-names-list"
+                        placeholder="ชื่ออาหาร (พิมพ์เองหรือเลือกจากรายการ)"
+                        value="${ci.name}"
+                        oninput="window._customItem.name=this.value"
+                        style="width:100%;margin:6px 0 6px;border:1px solid #ddd;border-radius:8px;padding:7px 10px;font-family:inherit;font-size:14px;box-sizing:border-box;">
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap;">
+                        <div style="display:flex;align-items:center;gap:3px;">
+                            <span style="font-size:12px;color:#888;">จำนวน</span>
+                            <input id="custom-qty-input" type="number" min="1" value="${ci.qty || 1}"
+                                oninput="window._customItem.qty=parseInt(this.value)||1"
+                                style="width:48px;border:1px solid #ddd;border-radius:8px;padding:5px 6px;font-family:inherit;font-size:13px;font-weight:700;text-align:center;">
+                        </div>
+                        <div style="display:flex;align-items:center;gap:3px;">
+                            <span style="font-size:12px;color:#888;">ml</span>
+                            <input id="custom-ml-input" type="number" min="0" placeholder="0"  value="${ci.ml || ''}"
+                                oninput="window._customItem.ml=parseFloat(this.value)||0"
+                                style="width:60px;border:1px solid #1565C0;border-radius:8px;padding:5px 6px;font-family:inherit;font-size:13px;font-weight:700;text-align:center;color:#1565C0;">
+                            <span style="font-size:11px;color:#1565C0;">ml</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:3px;">
+                            <span style="color:var(--secondary);font-weight:700;font-size:15px;">฿</span>
+                            <input id="custom-price-input" type="number" min="0" placeholder="ราคา" value="${ci.price || ''}"
+                                oninput="window._customItem.price=parseFloat(this.value)||0"
+                                style="width:70px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-family:inherit;font-size:14px;font-weight:700;color:var(--secondary);">
+                        </div>
+                        <button onclick="addCustomItemToCart()" style="background:var(--gold);color:white;border:none;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">+ เพิ่ม</button>
+                    </div>
+                    <p style="font-size:10px;color:#bbb;margin:5px 0 0;">💡 ใส่ ml เพื่อให้ระบบหักสต็อก (ถ้าไม่ใส่ = ไม่หักสต็อก)</p>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function addCustomItemToCart() {
+        const nameEl  = document.getElementById('custom-name-input');
+        const priceEl = document.getElementById('custom-price-input');
+        const qtyEl   = document.getElementById('custom-qty-input');
+        const mlEl    = document.getElementById('custom-ml-input');
+        const name  = nameEl  ? nameEl.value.trim()        : window._customItem.name;
+        const price = priceEl ? parseFloat(priceEl.value) || 0 : window._customItem.price;
+        const qty   = qtyEl   ? parseInt(qtyEl.value)   || 1   : window._customItem.qty || 1;
+        const ml    = mlEl    ? parseFloat(mlEl.value)  || 0   : window._customItem.ml  || 0;
+        if (!name)  { alert('กรุณาใส่ชื่ออาหาร'); return; }
+        if (!price) { alert('กรุณาใส่ราคา'); return; }
+        const displayName = ml > 0 ? `${name} ${ml}ml` : name;
+        bags.push({ id: 'custom_' + Date.now(), name: displayName, price, qty, ml, opts: [], optPrice: 0 });
+        window._customItem = { name: '', price: 0, qty: 1, ml: 0 };
+        renderMenus();
+    }
+
 
     function addToCartAny(menuId) {
         const menu = db.menus.find(m => m.id === menuId);
@@ -1254,7 +1319,7 @@
 
     async function placeOrder() {
         let total = 0;
-        let orderRawDetails    = bags.map(b => { total += (b.price + b.optPrice) * b.qty; return { name: b.name, qty: b.qty, toppings: b.opts }; });
+        let orderRawDetails    = bags.map(b => { total += (b.price + b.optPrice) * b.qty; return { name: b.name, qty: b.qty, toppings: b.opts, ml: b.ml || 0 }; });
         let orderItemsForDisplay = bags.map(b => `${b.name}${b.opts.length > 0 ? ' [' + b.opts.join(', ') + ']' : ''} x${b.qty}`);
         let displayName = isAdmin ? "เจ้าของร้าน" : isStaff ? "คนขาย" : `ลูกค้า (${user})`;
         db.orders.unshift({
@@ -1282,7 +1347,7 @@
         if (!container) return;
         const entries = Object.entries(snapshots).sort((a, b) => b[0].localeCompare(a[0]));
         if (entries.length === 0) {
-            container.innerHTML = '<p style="font-size:12px; color:#bbb; text-align:center; padding:15px;">ยังไม่มีข้อมูล — จะบันทึกครั้งแรกเวลา 23:59</p>';
+            container.innerHTML = '<p style="font-size:12px; color:#bbb; text-align:center; padding:15px;">ยังไม่มีข้อมูล — จะบันทึกครั้งแรกเวลา 06:00</p>';
             return;
         }
 
@@ -1365,9 +1430,9 @@
                     let q = bag.qty || 1;
                     itemCounts[bag.name] = (itemCounts[bag.name] || 0) + q;
                     if (bag.toppings) bag.toppings.forEach(t => { let tn = `Topping: ${t}`; itemCounts[tn] = (itemCounts[tn] || 0) + q; });
-                    if (bag.name.includes("น้ำเต้าหู้")) salesByStock.soy      += (bag.name.includes("400") ? 400 : 300) * q;
-                    if (bag.name.includes("น้ำขิง"))     salesByStock.ginger   += (bag.name.includes("400") ? 400 : 300) * q;
-                    if (bag.name.includes("ซุปงาดำ"))    salesByStock.sesame   += 250 * q;
+                    if (bag.name.includes("น้ำเต้าหู้")) salesByStock.soy      += (bag.ml > 0 ? bag.ml : (bag.name.includes("400") ? 400 : 300)) * q;
+                    if (bag.name.includes("น้ำขิง"))     salesByStock.ginger   += (bag.ml > 0 ? bag.ml : (bag.name.includes("400") ? 400 : 300)) * q;
+                    if (bag.name.includes("ซุปงาดำ"))    salesByStock.sesame   += (bag.ml > 0 ? bag.ml : 250) * q;
                     if (bag.name.includes("สังขยา"))     salesByStock.custard  += q;
                     if (bag.name.includes("ปาท่องโก๋")) salesByStock.patongko += q;
                     if (bag.name.includes("หมั่นโถ"))    salesByStock.mantou   += q;
@@ -1676,9 +1741,9 @@
             if (!o.raw_details) return;
             o.raw_details.forEach(function(bag){
                 var q = bag.qty || 1;
-                if (item==='soy'      && bag.name.indexOf('น้ำเต้าหู้')>-1) sold += (bag.name.indexOf('400')>-1?400:300)*q;
-                if (item==='ginger'   && bag.name.indexOf('น้ำขิง')>-1)     sold += (bag.name.indexOf('400')>-1?400:300)*q;
-                if (item==='sesame'   && bag.name.indexOf('ซุปงาดำ')>-1)    sold += 250*q;
+                if (item==='soy'      && bag.name.indexOf('น้ำเต้าหู้')>-1) sold += (bag.ml>0?bag.ml:(bag.name.indexOf('400')>-1?400:300))*q;
+                if (item==='ginger'   && bag.name.indexOf('น้ำขิง')>-1)     sold += (bag.ml>0?bag.ml:(bag.name.indexOf('400')>-1?400:300))*q;
+                if (item==='sesame'   && bag.name.indexOf('ซุปงาดำ')>-1)    sold += (bag.ml>0?bag.ml:250)*q;
                 if (item==='custard'  && bag.name.indexOf('สังขยา')>-1)     sold += q;
                 if (item==='patongko' && bag.name.indexOf('ปาท่องโก๋')>-1)  sold += q;
                 if (item==='mantou'   && bag.name.indexOf('หมั่นโถ')>-1)    sold += q;
@@ -2048,3 +2113,8 @@ window.onload = () => {};
 
 </body>
 </html>
+
+แก้ไขให้ เจ้าของร้าน กดยกเลิกรายการ ออเดอร์ ได้ทุกสถานะ
+ที่หน้าเมนู ให้เพิ่มรายการ " อื่นๆ " โดยสามารถใส่ยอดเงินเองได้ และเพิ่ม topping ที่กำหนดเองได้
+ปรับเวลาการ update ยอดเงินทุกอย่าง จาก 23.59  เป็น 6.00
+ปรับปุ่ม เพิ่มลงตะกร้า ให้อยู่บรรทัดเดียวกับ ยอดเงิน  และให้เล็กลง  และเพิ่มขนาดรูปอีก 15%
