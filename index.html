@@ -3,69 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Puretao v9.1 - Stock System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Puretao v10 - Stock System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #D4AF37; --dark: #2D1400; --cream: #FAF7F2; --white: #FFFFFF; --border: #E8D5C4; --secondary: #8B4513; --success: #28a745; --pending: #ffc107; --danger: #dc3545; }
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F5DC8C;
+            --dark: #2D1400;
+            --cream: #FAF7F2;
+            --white: #FFFFFF;
+            --border: #E8D5C4;
+            --secondary: #8B4513;
+            --success: #28a745;
+            --pending: #ffc107;
+            --danger: #dc3545;
+            --info: #1976d2;
+            --shadow-sm: 0 1px 3px rgba(45,20,0,0.04), 0 1px 2px rgba(45,20,0,0.03);
+            --shadow-md: 0 4px 12px rgba(45,20,0,0.06), 0 2px 4px rgba(45,20,0,0.04);
+            --shadow-lg: 0 10px 25px rgba(45,20,0,0.08), 0 4px 10px rgba(45,20,0,0.04);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Noto Sans Thai', sans-serif; background: var(--cream); color: var(--dark); overflow-x: hidden; touch-action: manipulation; }
+        body { font-family: 'Noto Sans Thai', sans-serif; background: var(--cream); color: var(--dark); overflow-x: hidden; touch-action: manipulation; -webkit-font-smoothing: antialiased; }
         .app { max-width: 500px; margin: 0 auto; min-height: 100vh; background: var(--cream); display: flex; flex-direction: column; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.05); }
-        .main-header { background: var(--white); padding: 10px 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; z-index: 110; position: relative; }
-        .logo-img { width: 45px; height: 45px; border-radius: 50%; border: 1px solid var(--gold); object-fit: cover; }
+        .main-header { background: var(--white); padding: 12px 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; z-index: 110; position: relative; box-shadow: var(--shadow-sm); }
+        .logo-img { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; box-shadow: 0 2px 6px rgba(212,175,55,0.25); }
         .shop-info { flex: 1; }
-        .shop-info h2 { font-size: 17px; margin: 0; font-weight: 700; }
+        .shop-info h2 { font-size: 17px; margin: 0; font-weight: 700; color: var(--dark); }
         .shop-info p { font-size: 11px; color: #888; }
-        .header-logout { font-size: 11px; color: var(--danger); font-weight: 700; border: 1px solid #ffcccc; padding: 4px 8px; border-radius: 8px; background: #fff5f5; cursor: pointer; }
-        .nav-tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; height: 55px; }
-        .tab-btn { flex: 1; border: none; background: none; font-size: 10px; font-weight: 800; color: #999; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: inherit; letter-spacing: 0.2px; }
-        .tab-btn.active { color: var(--gold); border-bottom: 3px solid var(--gold); }
-        .tab-btn span { font-size: 18px; margin-bottom: 2px; }
-        .page { display: none; padding-bottom: 150px; animation: fadeIn 0.2s; }
+        .header-logout { font-size: 11px; color: var(--danger); font-weight: 700; border: 1px solid #ffcccc; padding: 5px 10px; border-radius: 10px; background: #fff5f5; cursor: pointer; transition: all 0.2s; }
+        .header-logout:active { background: #ffe5e5; transform: scale(0.96); }
+        .nav-tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; height: 58px; box-shadow: var(--shadow-sm); }
+        .tab-btn { flex: 1; border: none; background: none; font-size: 10px; font-weight: 800; color: #999; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: inherit; letter-spacing: 0.2px; transition: color 0.2s; position: relative; }
+        .tab-btn.active { color: var(--gold); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 25%; right: 25%; height: 3px; background: var(--gold); border-radius: 3px 3px 0 0; }
+        .tab-btn span { font-size: 19px; margin-bottom: 2px; transition: transform 0.2s; }
+        .tab-btn.active span { transform: scale(1.1); }
+        .page { display: none; padding-bottom: 150px; animation: fadeIn 0.25s; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .card { background: var(--white); margin: 8px; border-radius: 15px; padding: 12px; border: 1px solid var(--border); }
-        .btn-main { background: var(--dark); color: white; border: none; padding: 14px; border-radius: 12px; width: 100%; font-weight: 700; font-size: 15px; cursor: pointer; }
-        .btn-main:disabled { background: #ccc; cursor: not-allowed; }
-        input[type="text"], input[type="number"], textarea, input[type="date"] { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; font-size: 16px; font-family: inherit; }
-        .topping-container { margin-top: 10px; padding: 8px; background: #fdfaf5; border-radius: 10px; border: 1px solid #f0e6d6; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-        .topping-item { display: flex; align-items: center; font-size: 11px; color: #444; background: #fff; padding: 6px; border-radius: 8px; border: 1px solid #eee; cursor: pointer; }
-        .topping-item:active { background: #f0f0f0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: var(--white); margin: 10px; border-radius: var(--radius-md); padding: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: box-shadow 0.2s; }
+        .card:hover { box-shadow: var(--shadow-md); }
+        .btn-main { background: var(--dark); color: white; border: none; padding: 14px; border-radius: var(--radius-md); width: 100%; font-weight: 700; font-size: 15px; cursor: pointer; font-family: inherit; transition: all 0.2s; box-shadow: var(--shadow-sm); }
+        .btn-main:active:not(:disabled) { transform: scale(0.98); }
+        .btn-main:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
+        input[type="text"], input[type="number"], textarea, input[type="date"] { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 10px; font-size: 16px; font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s; }
+        input:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,0.12); }
+        .topping-container { margin-top: 10px; padding: 8px; background: #fdfaf5; border-radius: var(--radius-md); border: 1px solid #f0e6d6; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .topping-item { display: flex; align-items: center; font-size: 11px; color: #444; background: #fff; padding: 6px; border-radius: var(--radius-sm); border: 1px solid #eee; cursor: pointer; transition: all 0.15s; }
+        .topping-item:active { background: #f0f0f0; transform: scale(0.98); }
+        .topping-item.has-selection { border-color: var(--gold); background: #fffcf5; box-shadow: 0 0 0 2px rgba(212,175,55,0.08); }
         .topping-left { display: flex; align-items: center; gap: 8px; width: 100%; pointer-events: none; }
         .topping-left input { pointer-events: auto; }
         .topping-price { color: var(--gold); font-weight: 700; margin-left: auto; }
         .topping-img { width: 24px; height: 24px; border-radius: 4px; object-fit: cover; flex-shrink: 0; pointer-events: auto; }
         input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--gold); flex-shrink: 0; }
         .dashboard { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
-        .dash-item { background: var(--white); padding: 8px 4px; border-radius: 10px; border: 1px solid var(--border); text-align: center; }
+        .dash-item { background: var(--white); padding: 8px 4px; border-radius: var(--radius-sm); border: 1px solid var(--border); text-align: center; }
         .dash-val { font-size: 14px; font-weight: 700; color: var(--secondary); }
         .dash-item small { font-size: 9px; color: #666; }
-        .status-badge { font-size: 9px; padding: 2px 6px; border-radius: 8px; color: white; }
-        .bg-pending { background: var(--pending); }
+        .status-badge { font-size: 9px; padding: 3px 8px; border-radius: 10px; color: white; font-weight: 700; letter-spacing: 0.3px; }
+        .bg-pending { background: var(--pending); color: #654d00; }
         .bg-success { background: var(--success); }
         .bg-danger { background: var(--danger); }
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1500; align-items:center; justify-content:center; }
-        .modal-content { background: white; border-radius: 20px; padding: 20px; width: 92%; max-height: 85vh; overflow-y: auto; }
-        #id-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--cream); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; }
-        #cloud-status { position: fixed; top: 2px; right: 5px; font-size: 8px; color: #bbb; z-index: 2100; pointer-events: none; }
-        .topping-edit-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 4px; font-size: 12px; border: 1px solid #eee; }
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter: blur(2px); z-index:1500; align-items:center; justify-content:center; animation: fadeIn 0.2s; }
+        .modal-content { background: white; border-radius: var(--radius-xl); padding: 20px; width: 92%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: slideUp 0.25s; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        #id-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:linear-gradient(135deg, var(--cream) 0%, #fff8e6 100%); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; }
+        #cloud-status { position: fixed; top: 2px; right: 5px; font-size: 9px; color: #bbb; z-index: 2100; pointer-events: none; background: rgba(255,255,255,0.7); padding: 1px 5px; border-radius: 4px; }
+        .topping-edit-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px; border-radius: var(--radius-sm); margin-bottom: 4px; font-size: 12px; border: 1px solid #eee; }
         .topping-preview-img { width: 30px; height: 30px; border-radius: 4px; object-fit: cover; margin-right: 8px; border: 1px solid #ddd; }
         .qty-btn { border:none; background:none; font-size:24px; color:var(--gold); font-weight:bold; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; }
         .summary-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
         .summary-table th { background: #f8f9fa; text-align: left; padding: 8px; border-bottom: 2px solid var(--gold); }
         .summary-table td { padding: 8px; border-bottom: 1px solid #eee; }
-        .qr-card { background: #fdfdfd; border: 2px dashed var(--gold); border-radius: 12px; padding: 15px; text-align: center; margin-top: 10px; animation: slideIn 0.3s; }
-        .qr-img { width: 180px; height: 180px; margin: 10px auto; display: block; border: 1px solid #eee; object-fit: contain; }
+        .qr-card { background: linear-gradient(135deg, #fdfdfd, #fffcf0); border: 2px dashed var(--gold); border-radius: var(--radius-md); padding: 15px; text-align: center; margin-top: 10px; animation: slideIn 0.3s; }
+        .qr-img { width: 180px; height: 180px; margin: 10px auto; display: block; border: 1px solid #eee; object-fit: contain; border-radius: 8px; }
         .pay-label { font-size: 11px; font-weight: 300; color: #888; display: block; margin-bottom: 5px; text-align: center; }
-        .pay-total { font-size: 26px; font-weight: 800; color: var(--dark); margin: 0; text-align: center; }
+        .pay-total { font-size: 28px; font-weight: 800; color: var(--dark); margin: 0; text-align: center; letter-spacing: 0.5px; }
         @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .cart-summary-bubble { background: #FFF9E6; border: 1px solid var(--gold); padding: 8px 12px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; }
-        .btn-add-bag { background: var(--gold); color: white; border: none; padding: 8px 12px; border-radius: 20px; font-weight: 700; font-size: 11px; cursor: pointer; margin-top: 10px; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .cart-item-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; border-bottom: 1px dashed #eee; padding: 6px 0; }
+        .cart-summary-bubble { background: linear-gradient(135deg, #FFF9E6, #fffcf0); border: 1px solid var(--gold); padding: 10px 12px; border-radius: var(--radius-md); margin-bottom: 10px; font-size: 14px; box-shadow: 0 2px 8px rgba(212,175,55,0.15); }
+        .btn-add-bag {
+            background: linear-gradient(135deg, var(--gold), #c89a2b);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 11px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(212,175,55,0.4);
+            transition: all 0.15s;
+            font-family: inherit;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .btn-add-bag:active { transform: scale(0.94); box-shadow: 0 1px 3px rgba(212,175,55,0.3); }
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-bottom: 1px dashed #eee; padding: 6px 0; gap: 8px; }
+        .cart-item-row:last-child { border-bottom: none; }
+        .cart-qty-controls { display: flex; align-items: center; gap: 6px; background: #fff; border-radius: 14px; padding: 2px 4px; border: 1px solid #f0e6d6; }
+        .cart-qty-btn { background: none; border: none; font-size: 16px; font-weight: 700; color: var(--secondary); width: 22px; height: 22px; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background 0.15s; }
+        .cart-qty-btn:active { background: #f5e6c4; }
+        .cart-qty-val { font-weight: 700; font-size: 13px; min-width: 18px; text-align: center; color: var(--dark); }
         .stock-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stock-input-group { background: #f9f9f9; padding: 10px; border-radius: 10px; border: 1px solid #eee; }
+        .stock-input-group { background: #f9f9f9; padding: 10px; border-radius: var(--radius-sm); border: 1px solid #eee; }
         .stock-input-group label { font-size: 11px; font-weight: bold; color: var(--secondary); display: block; margin-bottom: 4px; }
         .stock-input-group input { margin-bottom: 0; padding: 8px; font-size: 14px; }
-
+        /* ===== Toast notification ===== */
+        #toast-wrap { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 3000; pointer-events: none; max-width: 90%; }
+        .toast { background: var(--dark); color: #fff; padding: 10px 18px; border-radius: 24px; font-size: 13px; font-weight: 600; margin-bottom: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); animation: toastIn 0.25s; opacity: 0; }
+        .toast.show { opacity: 1; }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .toast.warn { background: #f57c00; }
+        @keyframes toastIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         /* ===== History Day Navigation ===== */
         .hist-day-nav {
             background: var(--white);
@@ -75,13 +129,14 @@
             align-items: center;
             gap: 8px;
             position: sticky;
-            top: 55px;
+            top: 58px;
             z-index: 90;
+            box-shadow: var(--shadow-sm);
         }
         .hist-nav-btn {
             background: #f5f5f5;
             border: 1px solid #ddd;
-            border-radius: 10px;
+            border-radius: var(--radius-sm);
             padding: 8px 14px;
             font-size: 16px;
             cursor: pointer;
@@ -91,48 +146,13 @@
         }
         .hist-nav-btn:disabled { opacity: 0.3; cursor: default; }
         .hist-nav-btn:not(:disabled):active { background: #e8e8e8; }
-        .hist-date-center {
-            flex: 1;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-        }
+        .hist-date-center { flex: 1; text-align: center; cursor: pointer; position: relative; }
         .hist-date-center .day-main { font-size: 14px; font-weight: 700; color: var(--dark); line-height: 1.3; }
         .hist-date-center .day-hint { font-size: 10px; color: #bbb; margin-top: 1px; }
-        .hist-date-picker-hidden {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            font-size: 0;
-        }
-        .btn-hist-today {
-            background: var(--gold);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 7px 12px;
-            font-size: 11px;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-        .hist-day-summary {
-            display: flex;
-            gap: 6px;
-            padding: 8px 12px 0;
-        }
-        .hist-day-sum-item {
-            flex: 1;
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 7px 4px;
-            text-align: center;
-        }
+        .hist-date-picker-hidden { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 0; }
+        .btn-hist-today { background: var(--gold); color: white; border: none; border-radius: var(--radius-sm); padding: 7px 12px; font-size: 11px; font-weight: 700; font-family: inherit; cursor: pointer; flex-shrink: 0; white-space: nowrap; }
+        .hist-day-summary { display: flex; gap: 6px; padding: 8px 12px 0; }
+        .hist-day-sum-item { flex: 1; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 7px 4px; text-align: center; box-shadow: var(--shadow-sm); }
         .hist-day-sum-item .sv { font-size: 13px; font-weight: 800; color: var(--secondary); }
         .hist-day-sum-item .sl { font-size: 9px; color: #888; margin-bottom: 2px; }
         .hist-day-sum-item.success-item { border-color: var(--success); }
@@ -140,9 +160,8 @@
         .hist-day-sum-item.danger-item { border-color: var(--danger); }
         .hist-day-sum-item.danger-item .sv { color: var(--danger); }
         .hist-no-orders { text-align: center; padding: 60px 20px; color: #ccc; font-size: 14px; }
-
-        /* ===== 7-Day Summary (Manage Page) ===== */
-        .week-summary-row { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; transition: border-color 0.2s; }
+        /* ===== 7-Day Summary ===== */
+        .week-summary-row { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 8px; transition: border-color 0.2s; box-shadow: var(--shadow-sm); }
         .week-summary-row.today { border-color: var(--gold); background: #fffcf5; }
         .week-summary-row.has-orders { border-left: 4px solid var(--secondary); }
         .week-summary-row.today.has-orders { border-left: 4px solid var(--gold); }
@@ -154,28 +173,26 @@
         .week-row-stats .day-total { font-size: 15px; font-weight: 800; color: var(--success); line-height: 1.2; }
         .week-row-stats .day-total.zero { color: #ccc; }
         .week-row-stats .day-count { font-size: 10px; color: #888; }
-        .btn-see-detail { border: 1px solid var(--gold); background: white; color: var(--secondary); font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-family: inherit; flex-shrink: 0; white-space: nowrap; transition: background 0.15s, color 0.15s; }
+        .btn-see-detail { border: 1px solid var(--gold); background: white; color: var(--secondary); font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; flex-shrink: 0; white-space: nowrap; transition: background 0.15s, color 0.15s; }
         .btn-see-detail:disabled { border-color: #ddd; color: #ccc; cursor: default; }
         .btn-see-detail.open { background: var(--gold); color: white; border-color: var(--gold); }
         .day-detail-wrap { display: none; border-top: 1px dashed #eee; margin-top: 10px; padding-top: 10px; animation: fadeIn 0.2s; }
         .day-detail-wrap.show { display: block; }
-        .day-detail-minibar { display: flex; justify-content: space-between; background: #f8fbf8; border: 1px solid #d4edda; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; font-size: 12px; }
-        .order-detail-card { background: var(--white); border: 1px solid #eee; border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+        .day-detail-minibar { display: flex; justify-content: space-between; background: #f8fbf8; border: 1px solid #d4edda; border-radius: var(--radius-sm); padding: 8px 12px; margin-bottom: 10px; font-size: 12px; }
+        .order-detail-card { background: var(--white); border: 1px solid #eee; border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 8px; box-shadow: var(--shadow-sm); }
         .order-detail-card .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
         .order-detail-card .order-time { font-size: 12px; font-weight: 700; color: var(--secondary); }
         .order-detail-card .order-user { font-size: 11px; color: #888; }
         .order-detail-card .order-price { font-size: 15px; font-weight: 800; color: var(--dark); }
         .order-detail-card .order-items { font-size: 12px; color: #555; line-height: 1.6; border-top: 1px dashed #eee; padding-top: 6px; margin-top: 6px; }
-        .order-detail-card .order-item-line { padding: 2px 0; }
-        .order-detail-card .order-item-line { padding-left: 2px; }
+        .order-detail-card .order-item-line { padding: 2px 0; padding-left: 2px; }
         .no-orders-msg { text-align: center; padding: 20px; color: #bbb; font-size: 13px; }
-        .hist-datepicker-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
+        .hist-datepicker-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; }
         .hist-datepicker-row label { font-size: 11px; color: #666; white-space: nowrap; flex-shrink: 0; }
         .hist-datepicker-row input[type="date"] { flex: 1; padding: 6px 8px; font-size: 12px; margin-bottom: 0; border: none; background: transparent; outline: none; min-width: 0; }
-        .btn-goto-today { font-size: 11px; background: var(--gold); color: white; border: none; border-radius: 8px; padding: 6px 10px; font-family: inherit; font-weight: 700; cursor: pointer; flex-shrink: 0; }
-
+        .btn-goto-today { font-size: 11px; background: var(--gold); color: white; border: none; border-radius: var(--radius-sm); padding: 6px 10px; font-family: inherit; font-weight: 700; cursor: pointer; flex-shrink: 0; }
         /* ===== Snapshot History ===== */
-        .snap-row { background: var(--white); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; overflow: hidden; }
+        .snap-row { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
         .snap-row-main { display: flex; align-items: center; gap: 8px; padding: 10px 12px; }
         .snap-row-date { flex: 1; }
         .snap-row-date .sd-label { font-size: 13px; font-weight: 700; color: var(--dark); }
@@ -183,7 +200,7 @@
         .snap-row-stats { text-align: right; flex-shrink: 0; }
         .snap-row-stats .sr-revenue { font-size: 14px; font-weight: 800; color: var(--success); }
         .snap-row-stats .sr-count { font-size: 10px; color: #888; }
-        .btn-snap-detail { border: 1px solid var(--secondary); background: white; color: var(--secondary); font-size: 11px; font-weight: 700; padding: 5px 9px; border-radius: 8px; cursor: pointer; font-family: inherit; flex-shrink: 0; transition: background 0.15s; }
+        .btn-snap-detail { border: 1px solid var(--secondary); background: white; color: var(--secondary); font-size: 11px; font-weight: 700; padding: 5px 9px; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; flex-shrink: 0; transition: background 0.15s; }
         .btn-snap-detail.open { background: var(--secondary); color: white; }
         .snap-detail-wrap { display: none; border-top: 1px dashed #eee; background: #fafafa; padding: 10px 12px; }
         .snap-detail-wrap.show { display: block; }
@@ -194,13 +211,11 @@
         .snap-detail-table td:first-child { text-align: left; color: var(--secondary); font-weight: 600; }
         .snap-auto-badge { display: inline-block; font-size: 9px; background: #e8f5e9; color: var(--success); border-radius: 4px; padding: 1px 5px; margin-left: 4px; font-weight: 600; }
         .snap-manual-badge { display: inline-block; font-size: 9px; background: #e3f2fd; color: #1976d2; border-radius: 4px; padding: 1px 5px; margin-left: 4px; font-weight: 600; }
-
         /* ===== Compact stock input grid ===== */
         .stock-compact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 4px; }
         .sc-item { display: flex; flex-direction: column; align-items: center; background: #faf9f6; border: 1px solid #eeddd0; border-radius: 8px; padding: 5px 4px; }
         .sc-item span { font-size: 9px; font-weight: 700; color: var(--secondary); margin-bottom: 3px; text-align: center; line-height: 1.2; }
         .sc-item input { width: 100%; padding: 4px 5px; font-size: 13px; font-family: inherit; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 0; text-align: center; }
-
         /* ===== Chart Cards ===== */
         .chart-range-bar { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
         .chart-range-btn { border: 1px solid var(--border); background: #f5f5f5; color: #666; font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
@@ -214,59 +229,170 @@
         .chart-apply-btn { background: var(--gold); color: white; border: none; border-radius: 8px; padding: 7px 12px; font-size: 11px; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
         .chart-canvas-wrap { width: 100%; height: 220px; margin-top: 6px; position: relative; }
         .chart-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
-
-        /* ===== Line Chart Legend ===== */
         .line-chart-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 8px; }
         .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #555; }
         .legend-line { width: 20px; height: 2px; display: inline-block; flex-shrink: 0; }
         .legend-line.dashed { background: repeating-linear-gradient(to right, currentColor 0, currentColor 4px, transparent 4px, transparent 8px); }
-
-        /* ===== Group Tab Selector ===== */
         .group-tab-bar { display: flex; gap: 4px; margin-bottom: 10px; }
         .group-tab-btn { flex: 1; border: 1px solid var(--border); background: #f5f5f5; color: #666; font-size: 10px; font-weight: 700; padding: 7px 4px; border-radius: 10px; cursor: pointer; font-family: inherit; transition: all 0.15s; text-align: center; }
         .group-tab-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); }
-
-        /* Clear orders date picker */
-        .clear-orders-datepicker { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px dashed var(--secondary); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+        .clear-orders-datepicker { display: flex; align-items: center; gap: 8px; background: #fff; border: 1px dashed var(--secondary); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 10px; }
         .clear-orders-datepicker label { font-size: 12px; font-weight: 700; color: var(--secondary); white-space: nowrap; flex-shrink: 0; }
         .clear-orders-datepicker input[type="date"] { flex: 1; padding: 6px 8px; font-size: 13px; margin-bottom: 0; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; min-width: 0; }
+        /* ===== Custom Item Card "อื่นๆ" ===== */
+        .custom-item-card {
+            border: 2px dashed var(--gold) !important;
+            background: linear-gradient(135deg, #fffefa, #fff8e6) !important;
+        }
+        .custom-item-icon {
+            width: 99px;
+            height: 99px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #f5e6b0, #ffd966);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 32px;
+            box-shadow: inset 0 2px 6px rgba(255,255,255,0.5), 0 2px 6px rgba(212,175,55,0.2);
+        }
+        .ci-pill-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+        .ci-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            background: #fff;
+            border: 1px solid #e0d4be;
+            border-radius: 14px;
+            padding: 4px 8px;
+            font-size: 11px;
+        }
+        .ci-pill input { width: 56px; border: none; outline: none; font-size: 13px; font-weight: 700; padding: 0; margin: 0; background: transparent; text-align: center; }
+        .ci-pill.ml input { color: var(--info); width: 50px; }
+        .ci-pill.price input { color: var(--secondary); width: 60px; }
+        .ci-pill .ci-label { color: #888; font-size: 10px; font-weight: 600; }
+        .custom-toppings-section {
+            margin-top: 10px;
+            padding: 8px 10px;
+            background: #fffaed;
+            border: 1px dashed #e0c89b;
+            border-radius: var(--radius-md);
+        }
+        .cts-header {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .cts-add-row {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .cts-add-row input {
+            margin: 0;
+            padding: 6px 8px;
+            font-size: 12px;
+            height: auto;
+        }
+        .cts-add-row input[type="text"] { flex: 1; min-width: 0; }
+        .cts-add-row input[type="number"] { width: 60px; flex-shrink: 0; }
+        .cts-add-btn {
+            background: var(--gold);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .cts-list { display: flex; flex-wrap: wrap; gap: 4px; }
+        .cts-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #fff;
+            border: 1px solid var(--gold);
+            border-radius: 14px;
+            padding: 3px 4px 3px 10px;
+            font-size: 11px;
+            color: #555;
+        }
+        .cts-chip b { color: var(--gold); margin-left: 2px; }
+        .cts-chip-x {
+            background: #fbeeee;
+            color: var(--danger);
+            border: none;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 2px;
+        }
+        /* ===== Landing screen ===== */
+        .landing-card {
+            background: var(--white);
+            padding: 32px 22px;
+            border-radius: 28px;
+            text-align: center;
+            width: 100%;
+            border: 1px solid var(--border);
+            box-shadow: 0 18px 40px rgba(45,20,0,0.08);
+        }
+        /* admin action buttons in history */
+        .admin-actions { display:flex; gap:6px; flex-wrap: wrap; }
+        .admin-action-btn { border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; font-family:inherit; cursor:pointer; transition: all 0.15s; }
+        .admin-action-btn:active { transform: scale(0.96); }
+        .aab-success { background: var(--success); color: white; }
+        .aab-cancel { background: #f1f1f1; color: #666; }
+        .aab-restore { background: #e3f2fd; color: var(--info); }
     </style>
 </head>
 <body>
 <div id="cloud-status">Sync: Standby</div>
+<div id="toast-wrap"></div>
 <div class="app">
     <div id="id-overlay">
-        <div style="background:var(--white); padding:30px 20px; border-radius:25px; text-align:center; width:100%; border:1px solid var(--border); box-shadow:0 10px 25px rgba(0,0,0,0.05);">
+        <div class="landing-card">
             <div style="position: relative; display: inline-block;">
-                <img id="landing-logo" src="https://via.placeholder.com/80" style="width:80px; height:80px; border-radius:50%; border:2px solid var(--gold); margin-bottom:15px; object-fit:cover;">
-                <button onclick="enterAsStaffOrAdmin()" style="position: absolute; bottom: 15px; right: -10px; background:white; border:1px solid #ddd; border-radius:50%; width:30px; height:30px; font-size:14px; box-shadow:0 2px 5px rgba(0,0,0,0.1);">⚙️</button>
+                <img id="landing-logo" src="https://via.placeholder.com/80" style="width:90px; height:90px; border-radius:50%; border:3px solid var(--gold); margin-bottom:15px; object-fit:cover; box-shadow:0 4px 12px rgba(212,175,55,0.25);">
+                <button onclick="enterAsStaffOrAdmin()" style="position: absolute; bottom: 15px; right: -10px; background:white; border:1px solid #ddd; border-radius:50%; width:34px; height:34px; font-size:15px; box-shadow:0 2px 8px rgba(0,0,0,0.15); cursor:pointer;">⚙️</button>
             </div>
-            <h1 id="landing-shop-name" style="color:var(--gold); margin-bottom:5px; font-size:24px;">PureTao</h1>
+            <h1 id="landing-shop-name" style="color:var(--gold); margin-bottom:5px; font-size:26px; font-weight:800;">PureTao</h1>
             <p id="landing-shop-sub" style="font-size:13px; color:#999; margin-bottom:20px;">ยินดีต้อนรับสู่ระบบสั่งอาหาร</p>
             <input type="text" id="input-username" placeholder="ระบุชื่อของคุณ..." autofocus>
-            <button id="btn-start" class="btn-main" onclick="enterAsCustomer()" style="background:var(--gold);" disabled>กำลังโหลดระบบ...</button>
+            <button id="btn-start" class="btn-main" onclick="enterAsCustomer()" style="background:linear-gradient(135deg, var(--gold), #c89a2b); box-shadow: 0 4px 12px rgba(212,175,55,0.35);" disabled>กำลังโหลดระบบ...</button>
         </div>
     </div>
-
     <header class="main-header">
         <img id="ui-logo" src="https://via.placeholder.com/80" class="logo-img">
         <div class="shop-info">
             <h2 id="ui-name">PureTao</h2>
             <div style="display:flex; align-items:center; gap:8px;">
                 <p id="ui-sub">สดใหม่เพื่อสุขภาพ</p>
-                <div id="role-badge" style="display:none; font-size:9px; background:var(--dark); color:white; padding:2px 6px; border-radius:6px;">ROLE</div>
+                <div id="role-badge" style="display:none; font-size:9px; background:var(--dark); color:white; padding:2px 6px; border-radius:6px; font-weight:700;">ROLE</div>
             </div>
         </div>
         <button class="header-logout" id="btn-logout-main" style="display:none;" onclick="logout()">ออกจากระบบ</button>
     </header>
-
     <div class="nav-tabs">
         <button class="tab-btn active" id="t-order" onclick="navTo('order-page')"><span>🥛</span>เมนู</button>
         <button class="tab-btn" id="t-history" onclick="navTo('history-page')"><span>📜</span>ออเดอร์</button>
         <button class="tab-btn" id="t-sales" style="display:none;" onclick="navTo('sales-page')"><span>📊</span>ประวัติการขาย</button>
         <button class="tab-btn" id="t-manage" style="display:none;" onclick="navTo('manage-page')"><span>⚙️</span>จัดการ</button>
     </div>
-
     <!-- Page: Order -->
     <div id="order-page" class="page active">
         <div style="padding:10px 15px; font-size:12px; background:white; border-bottom:1px solid #eee; color:#666;">
@@ -278,7 +404,6 @@
             <button class="btn-main" id="btn-submit" onclick="confirmAndPlaceOrder()" disabled>กรุณาเลือกเมนู - ฿0</button>
         </div>
     </div>
-
     <!-- Page: History -->
     <div id="history-page" class="page">
         <div class="hist-day-nav">
@@ -317,13 +442,10 @@
         </div>
         <div id="orders-list-ui" style="padding:8px;"></div>
     </div>
-
     <!-- Page: Sales History -->
     <div id="sales-page" class="page">
         <div style="padding:16px 15px 8px;"><h2 style="font-size:17px; font-weight:800; color:var(--dark);">📊 ประวัติการขาย</h2></div>
         <div style="padding:0 15px;">
-
-            <!-- CHART RANGE (shared) -->
             <div class="card" style="border-color:var(--gold); background:#fffcf5; padding:10px 12px;">
                 <div style="font-size:12px; font-weight:800; color:var(--secondary); margin-bottom:8px;">📅 ช่วงเวลากราฟ</div>
                 <div class="chart-range-bar">
@@ -339,14 +461,10 @@
                     </div>
                 </div>
             </div>
-
-            <!-- CHART 1: Revenue Line -->
             <div class="card" style="border-color:#28a745; background:#f6fff8;">
                 <h4 style="font-size:14px; color:#1a7a30; margin-bottom:6px;">📈 ยอดขายรวมต่อวัน (฿)</h4>
                 <div class="chart-canvas-wrap"><canvas id="c-revenue"></canvas></div>
             </div>
-
-            <!-- 7-DAY HISTORY — moved here, just below revenue chart -->
             <div class="card" style="border-color: var(--gold); background: #fffcf0; margin-bottom: 8px;">
                 <h4 style="font-size: 14px; color: var(--secondary); margin-bottom: 12px;">📅 ดูข้อมูลย้อนหลัง 7 วัน</h4>
                 <div class="hist-datepicker-row">
@@ -356,8 +474,6 @@
                 </div>
                 <div id="week-summary-list"></div>
             </div>
-
-            <!-- CHART 2: Stock vs Sold — GROUPED BAR CHART, 3 Groups -->
             <div class="card" style="border-color:var(--secondary); background:#fff8f0;">
                 <h4 style="font-size:14px; color:var(--secondary); margin-bottom:8px;">📦 ต้นทุน &amp; ยอดขายสินค้าต่อวัน</h4>
                 <div class="group-tab-bar">
@@ -371,8 +487,6 @@
                 </div>
                 <div class="chart-canvas-wrap"><canvas id="c-stock"></canvas></div>
             </div>
-
-            <!-- Stock Input Section — compact collapsible -->
             <div class="card" style="border-color: var(--gold); background: #fff; padding:10px 12px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none;"
                      onclick="toggleStockInput()">
@@ -413,14 +527,10 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Sales Summary -->
             <div id="manage-summary-section" class="card" style="border-color: var(--gold); background: #fff;">
                 <h4 style="font-size: 14px; color: var(--secondary); margin-bottom: 5px;">📊 สรุปยอดคงเหลือ (ต้นทุน - ขาย = คงเหลือ)</h4>
                 <div id="item-sales-summary"></div>
             </div>
-
-            <!-- SNAPSHOT HISTORY -->
             <div class="card" style="border-color: var(--secondary); background: #fff8f0; margin-bottom: 8px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <div>
@@ -431,8 +541,6 @@
                 </div>
                 <div id="snapshot-history-list"><p style="font-size:12px; color:#bbb; text-align:center; padding:15px;">กำลังโหลด...</p></div>
             </div>
-
-            <!-- ล้างออเดอร์ — เลือกวันที่ได้เอง -->
             <div class="card" style="border-color: var(--danger); background: #fff5f5;">
                 <h4 style="font-size:13px; color:var(--danger); margin-bottom:10px;">🗑️ จัดการล้างออเดอร์</h4>
                 <div class="clear-orders-datepicker">
@@ -447,7 +555,6 @@
             </div>
         </div>
     </div>
-
     <!-- Page: Manage -->
     <div id="manage-page" class="page">
         <div style="padding:16px 15px 8px;"><h2 style="font-size:17px; font-weight:800; color:var(--dark);">⚙️ จัดการหลังบ้าน</h2></div>
@@ -466,7 +573,6 @@
             <input type="file" id="import-f" style="display:none" onchange="importData(this)">
         </div>
     </div>
-
     <!-- Modals -->
     <div id="admin-modal" class="modal">
         <div class="modal-content">
@@ -492,7 +598,6 @@
             <button onclick="closeModal('admin-modal')" style="width:100%; margin-top:15px; border:none; background:none; color:#999; font-size:13px;">ยกเลิก</button>
         </div>
     </div>
-
     <div id="shop-edit-modal" class="modal">
         <div class="modal-content">
             <h3>แก้ไขข้อมูลร้าน & การรับเงิน</h3>
@@ -523,26 +628,25 @@
             <button onclick="closeModal('shop-edit-modal')" style="width:100%; margin-top:15px; border:none; background:none; color:#999;">ยกเลิก</button>
         </div>
     </div>
-
     <div id="zoom-modal" class="modal" onclick="this.style.display='none'">
         <img id="zoom-img" src="" style="max-width:90%; border-radius:15px; border:3px solid white;">
     </div>
 </div>
-
 <script>
     const BASE_URL      = "https://puretaoshop-default-rtdb.asia-southeast1.firebasedatabase.app/";
     const CONTENT_URL   = BASE_URL + "/content.json";
     const ORDERS_URL    = BASE_URL + "/orders.json";
     const STOCK_URL     = BASE_URL + "/stock.json";
     const SNAPSHOTS_URL = BASE_URL + "/snapshots.json";
-
+    // ===== BUSINESS DAY CONFIG =====
+    // วันใหม่ของร้านเริ่ม 06:00 น. (ก่อน 06:00 = ยังเป็นของเมื่อวาน)
+    const BUSINESS_DAY_START_HOUR = 6;
     let db = {
         shop: { name:"PureTao", sub:"สดใหม่เพื่อสุขภาพ", logo:"", pp:"0000000000", qr_type:"promptpay", custom_qr:"" },
         menus: [], orders: [],
         stock: { soy:0, ginger:0, sesame:0, custard:0, patongko:0, mantou:0,
                  jelly:0, basil:0, barley:0, redbeans:0, blackbeans:0, ginkgo:0, grain6:0, tofu:0 }
     };
-
     let bags = []; let activeSelection = {};
     let user = ""; let userId = ""; let isAdmin = false; let isStaff = false;
     let tempMImg = ""; let tempOImg = ""; let tempLogoImg = ""; let tempQRImg = "";
@@ -550,11 +654,8 @@
     let selectedWeekDate = null;
     let snapshots = {};
     let lastAutoSnapshotDate = null;
-
     let historyDate = new Date();
     let historyDateStr = "";
-
-    // ===== Stock groups definition =====
     const STOCK_GROUP_1 = [
         { id:'soy',      label:'น้ำเต้าหู้เข้มข้น', unit:'ml',   color:'#1565C0' },
         { id:'ginger',   label:'น้ำขิง',              unit:'ml',   color:'#E65100' },
@@ -575,12 +676,41 @@
         { id:'grain6',     label:'ธัญพืช 6 ชนิด',   unit:'ถ้วย', color:'#5D4037' },
         { id:'tofu',       label:'เต้าฮวย',          unit:'ถ้วย', color:'#37474F' }
     ];
-
     let currentStockGroup = 1;
-
     const thDaysShort = ['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
     const thMonths    = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-
+    // =============================================
+    //  BUSINESS DAY HELPER
+    //  รอบวันของร้าน = 06:00 – 05:59 วันถัดไป
+    // =============================================
+    function getBusinessDate(d) {
+        const base = d ? new Date(d) : new Date();
+        const out  = new Date(base);
+        if (out.getHours() < BUSINESS_DAY_START_HOUR) {
+            out.setDate(out.getDate() - 1);
+        }
+        out.setHours(0, 0, 0, 0);
+        return out;
+    }
+    function getBusinessThaiDateStr(d) {
+        return getBusinessDate(d).toLocaleDateString('th-TH');
+    }
+    // =============================================
+    //  TOAST NOTIFICATION
+    // =============================================
+    function toast(msg, type) {
+        const wrap = document.getElementById('toast-wrap');
+        if (!wrap) return;
+        const t = document.createElement('div');
+        t.className = 'toast' + (type ? (' ' + type) : '');
+        t.textContent = msg;
+        wrap.appendChild(t);
+        requestAnimationFrame(() => t.classList.add('show'));
+        setTimeout(() => {
+            t.style.opacity = '0';
+            setTimeout(() => t.remove(), 250);
+        }, 2200);
+    }
     // =============================================
     //  INIT
     // =============================================
@@ -589,7 +719,6 @@
         localStorage.setItem('puretao_user_id', userId);
         await loadDB();
         isInitialLoadDone = true;
-
         const savedUser   = localStorage.getItem('puretao_user_name');
         const sessionRole = sessionStorage.getItem('puretao_role');
         if (sessionRole === 'admin') {
@@ -606,56 +735,43 @@
             document.getElementById('btn-logout-main').style.display = 'block';
             updateUserLabels();
         }
-
         document.getElementById('btn-start').disabled = false;
         document.getElementById('btn-start').textContent = "เริ่มสั่งอาหาร";
-
         updateShopUI();
         renderMenus();
         if (isAdmin) updateStockUI();
-
-        historyDate = new Date();
+        historyDate = getBusinessDate();
         updateHistoryDateUI();
         setAnchorToToday();
-
-        // Set today as default for clear orders date picker
         const pickerEl = document.getElementById('manage-date-filter-picker');
-        if (pickerEl) { pickerEl.value = isoFromDate(new Date()); onClearDateChange(pickerEl.value); }
-
+        if (pickerEl) { pickerEl.value = isoFromDate(getBusinessDate()); onClearDateChange(pickerEl.value); }
         setInterval(checkAutoSnapshot, 30000);
         if (isAdmin) await checkMissingSnapshots();
     };
-
     // =============================================
     //  CLEAR ORDERS DATE PICKER
     // =============================================
     function onClearDateChange(isoVal) {
         if (!isoVal) return;
-        const d = new Date(isoVal + 'T00:00:00');
-        const thaiDateStr = d.toLocaleDateString('th-TH');
         document.getElementById('manage-date-filter').value = isoVal;
     }
-
     // =============================================
     //  HISTORY PAGE — DAY NAVIGATION
     // =============================================
     function isoFromDate(d) {
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
-
     function updateHistoryDateUI() {
-        if (isStaff) historyDate = new Date();
+        if (isStaff) historyDate = getBusinessDate();
         historyDateStr = historyDate.toLocaleDateString('th-TH');
-        const todayStr = new Date().toLocaleDateString('th-TH');
+        const todayBiz = getBusinessDate();
+        const todayStr = todayBiz.toLocaleDateString('th-TH');
         const isToday  = historyDateStr === todayStr;
-
         const label = isToday
             ? `🔔 วันนี้  ${thDaysShort[historyDate.getDay()]} ${historyDate.getDate()} ${thMonths[historyDate.getMonth()]} ${historyDate.getFullYear() + 543}`
             : `${thDaysShort[historyDate.getDay()]} ${historyDate.getDate()} ${thMonths[historyDate.getMonth()]} ${historyDate.getFullYear() + 543}`;
-
         const lbl = document.getElementById('history-date-label');
         if (lbl) lbl.textContent = label;
-
         const prevBtn     = document.getElementById('btn-hist-prev');
         const nextBtn     = document.getElementById('btn-hist-next');
         const todayBtn    = document.getElementById('btn-hist-today-main');
@@ -663,7 +779,6 @@
         const hint        = document.getElementById('hist-date-hint');
         const notice      = document.getElementById('staff-today-notice');
         const picker      = document.getElementById('history-page-date');
-
         if (isStaff) {
             if (prevBtn)    { prevBtn.disabled = true; prevBtn.style.opacity = '0.2'; }
             if (nextBtn)    { nextBtn.disabled = true; nextBtn.style.opacity = '0.2'; }
@@ -682,42 +797,37 @@
             if (picker)     { picker.disabled = false; picker.value = isoFromDate(historyDate); }
         }
     }
-
     function changeHistoryDay(delta) {
         if (isStaff) return;
         const d = new Date(historyDate);
         d.setDate(d.getDate() + delta);
-        const today = new Date(); today.setHours(23,59,59,999);
-        if (d > today) return;
+        const todayBiz = getBusinessDate();
+        if (d > todayBiz) return;
         historyDate = d;
         updateHistoryDateUI();
         renderOrders();
     }
-
     function historyGoToday() {
-        historyDate = new Date();
+        historyDate = getBusinessDate();
         updateHistoryDateUI();
         renderOrders();
     }
-
     function setHistoryDateFromPicker(isoVal) {
         if (isStaff) return;
         if (!isoVal) return;
         const d = new Date(isoVal + 'T00:00:00');
-        const today = new Date(); today.setHours(23,59,59,999);
-        if (d > today) return;
+        const todayBiz = getBusinessDate();
+        if (d > todayBiz) return;
         historyDate = d;
         updateHistoryDateUI();
         renderOrders();
     }
-
     function triggerHistDatePicker() {
         const el = document.getElementById('history-page-date');
         if (!el) return;
         if (typeof el.showPicker === 'function') { try { el.showPicker(); } catch(e) { el.click(); } }
         else { el.click(); }
     }
-
     // =============================================
     //  RENDER ORDERS
     // =============================================
@@ -726,7 +836,6 @@
         const list      = document.getElementById('orders-list-ui');
         const allOrders = db.orders || [];
         const dayOrders = allOrders.filter(o => o.date === historyDateStr);
-
         if (isAdmin) {
             const successDay = dayOrders.filter(o => o.status === 'เสร็จสิ้น');
             const cancelDay  = dayOrders.filter(o => o.status === 'ยกเลิก');
@@ -744,22 +853,41 @@
             document.getElementById('admin-day-summary').style.display = 'none';
             document.getElementById('user-day-info').style.display    = 'none';
         }
-
         let show = (isAdmin || isStaff) ? dayOrders : dayOrders.filter(o => o.uid === userId);
-
         if (!show || show.length === 0) {
             list.innerHTML = `<div class="hist-no-orders">📭<br>ไม่มีออเดอร์ในวันนี้</div>`;
             return;
         }
-
         list.innerHTML = show.map(o => {
             let qrSrc = "";
             if (db.shop.qr_type === 'custom') qrSrc = db.shop.custom_qr || 'https://via.placeholder.com/150?text=No+QR';
             else { const ppId = db.shop.pp || "0000000000"; qrSrc = `https://promptpay.io/${ppId}/${o.total}.png`; }
-
             const borderColor = o.status === 'ยกเลิก'  ? 'var(--danger)'
                               : o.status === 'เสร็จสิ้น' ? 'var(--success)'
                               : 'var(--pending)';
+            // ===== Action buttons (admin can change ANY status) =====
+            let actionsHtml = '';
+            if (isAdmin) {
+                // เจ้าของร้านควบคุมได้ทุกสถานะ
+                if (o.status !== 'เสร็จสิ้น') {
+                    actionsHtml += `<button class="admin-action-btn aab-success" onclick="updateStatus(${o.id}, 'เสร็จสิ้น')">✓ สำเร็จ</button>`;
+                }
+                if (o.status !== 'ยกเลิก') {
+                    actionsHtml += `<button class="admin-action-btn aab-cancel" onclick="updateStatus(${o.id}, 'ยกเลิก')">✕ ยกเลิก</button>`;
+                }
+                if (o.status === 'ยกเลิก') {
+                    actionsHtml += `<button class="admin-action-btn aab-restore" onclick="updateStatus(${o.id}, 'รอดำเนินการ')">↻ กู้คืน</button>`;
+                }
+            } else if (isStaff) {
+                if (o.status === 'รอดำเนินการ') {
+                    actionsHtml += `<button class="admin-action-btn aab-success" onclick="updateStatus(${o.id}, 'เสร็จสิ้น')">✓ สำเร็จ</button>`;
+                    actionsHtml += `<button class="admin-action-btn aab-cancel" onclick="updateStatus(${o.id}, 'ยกเลิก')">✕ ยกเลิก</button>`;
+                }
+            } else {
+                if (o.status === 'รอดำเนินการ') {
+                    actionsHtml += `<button class="admin-action-btn aab-cancel" onclick="updateStatus(${o.id}, 'ยกเลิก')">✕ ยกเลิก</button>`;
+                }
+            }
             return `<div class="card" style="border-left: 5px solid ${borderColor}">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
                     <div>
@@ -778,17 +906,11 @@
                     </div>` : ''}
                 <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f5f5f5; padding-top:8px; margin-top:10px;">
                     <b style="color:var(--secondary); font-size:15px;">รวม ฿${o.total}</b>
-                    <div style="display:flex; gap:6px;">
-                        ${(isAdmin || isStaff) && o.status === 'รอดำเนินการ'
-                            ? `<button onclick="updateStatus(${o.id}, 'เสร็จสิ้น')" style="background:var(--success); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px;">สำเร็จ</button>` : ''}
-                        ${(o.status !== 'ยกเลิก' && (isAdmin || o.status === 'รอดำเนินการ'))
-                            ? `<button onclick="updateStatus(${o.id}, 'ยกเลิก')" style="background:#f1f1f1; color:#666; border:none; padding:6px 12px; border-radius:8px; font-size:11px;">ยกเลิก</button>` : ''}
-                    </div>
+                    <div class="admin-actions">${actionsHtml}</div>
                 </div>
             </div>`;
         }).join('');
     }
-
     async function updateStatus(id, newStatus) {
         if (confirm(`ยืนยันเป็น "${newStatus}"?`)) {
             let idx = db.orders.findIndex(o => o.id === id);
@@ -797,10 +919,10 @@
                 await saveOrders();
                 renderOrders();
                 if (isAdmin) updateSalesSummary();
+                toast(`อัปเดตเป็น "${newStatus}" แล้ว`, newStatus === 'ยกเลิก' ? 'warn' : 'success');
             }
         }
     }
-
     // =============================================
     //  DB LOAD / SAVE
     // =============================================
@@ -816,23 +938,20 @@
             const cD = await cR.json(), oD = await oR.json(), sD = await sR.json(), snD = await snR.json();
             if (cD) { db.shop = cD.shop || db.shop; db.menus = cD.menus || []; db.menus.sort((a,b) => (a.order||0)-(b.order||0)); }
             db.orders = Object.values(oD || {})
-  .filter(order => order != null)
-  .sort((a,b)=>(a.created||0)-(b.created||0));
-            // Merge fetched stock with defaults (to include new group3 fields)
+                .filter(order => order != null)
+                .sort((a,b)=>(a.created||0)-(b.created||0));
             if (sD) db.stock = Object.assign({}, db.stock, sD);
             snapshots = snD || {};
             document.getElementById('cloud-status').textContent = "Sync: Connected ✅";
         } catch (e) {
             document.getElementById('cloud-status').textContent = "Sync: Offline ⚠️";
-            const local = localStorage.getItem('puretao_v9.1_db');
+            const local = localStorage.getItem('puretao_v10_db');
             if (local) { const p = JSON.parse(local); db = p.db || db; snapshots = p.snapshots || {}; }
         }
     }
-
     function saveLocal() {
-        localStorage.setItem('puretao_v9.1_db', JSON.stringify({ db, snapshots }));
+        localStorage.setItem('puretao_v10_db', JSON.stringify({ db, snapshots }));
     }
-
     async function saveContent() {
         if (!isInitialLoadDone) return;
         document.getElementById('cloud-status').textContent = "Sync: Saving...";
@@ -842,7 +961,6 @@
             document.getElementById('cloud-status').textContent = "Sync: Saved ✅";
         } catch (e) { document.getElementById('cloud-status').textContent = "Sync: Local Only 💾"; }
     }
-
     async function saveOrders() {
         if (!isInitialLoadDone) return;
         document.getElementById('cloud-status').textContent = "Sync: Updating Orders...";
@@ -852,16 +970,14 @@
             document.getElementById('cloud-status').textContent = "Sync: Saved ✅";
         } catch (e) { document.getElementById('cloud-status').textContent = "Sync: Local Only 💾"; }
     }
-
     // =============================================
-    //  DAILY SNAPSHOT SYSTEM
+    //  DAILY SNAPSHOT SYSTEM (06:00 รอบวันของร้าน)
     // =============================================
     function calcDaySnapshot(isoDate, trigger) {
         const thaiDate      = new Date(isoDate + 'T00:00:00').toLocaleDateString('th-TH');
         const dayOrders     = (db.orders || []).filter(o => o.date === thaiDate);
         const successOrders = dayOrders.filter(o => o.status === 'เสร็จสิ้น');
         const cancelOrders  = dayOrders.filter(o => o.status === 'ยกเลิก');
-
         let sold = { soy:0, ginger:0, sesame:0, custard:0, patongko:0, mantou:0,
                      jelly:0, basil:0, barley:0, redbeans:0, blackbeans:0, ginkgo:0, grain6:0, tofu:0 };
         successOrders.forEach(o => {
@@ -874,7 +990,6 @@
                 if (bag.name.includes("สังขยา"))     sold.custard  += q;
                 if (bag.name.includes("ปาท่องโก๋")) sold.patongko += q;
                 if (bag.name.includes("หมั่นโถ"))    sold.mantou   += q;
-                // Group 3 toppings — matched by topping name
                 if (bag.toppings) bag.toppings.forEach(t => {
                     if (t.includes("วุ้น"))           sold.jelly      += q;
                     if (t.includes("เม็ดแมงลัก"))    sold.basil      += q;
@@ -887,7 +1002,6 @@
                 });
             });
         });
-
         return {
             date_thai: thaiDate,
             stock    : { ...db.stock },
@@ -899,7 +1013,6 @@
             saved_at : new Date().toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' })
         };
     }
-
     async function saveSnapshot(isoDate, trigger) {
         const snap = calcDaySnapshot(isoDate, trigger);
         snapshots[isoDate] = snap;
@@ -908,23 +1021,27 @@
             saveLocal();
         } catch(e) { saveLocal(); }
     }
-
     function checkAutoSnapshot() {
         if (!isAdmin || !isInitialLoadDone) return;
-        const now      = new Date();
-        const todayISO = isoFromDate(now);
-        if (now.getHours() === 6 && now.getMinutes() === 0 && lastAutoSnapshotDate !== todayISO) {
-            lastAutoSnapshotDate = todayISO;
-            saveSnapshot(todayISO, 'auto');
+        const now = new Date();
+        // บันทึก snapshot ของ "วันที่ผ่านมา" ตอน 06:00 (ก่อนเริ่มวันใหม่)
+        if (now.getHours() === BUSINESS_DAY_START_HOUR && now.getMinutes() === 0) {
+            // หา business date ของ 1 นาทีก่อน (= วานนี้)
+            const oneMinAgo = new Date(now.getTime() - 60000);
+            const yesterdayBiz = getBusinessDate(oneMinAgo);
+            const yesterdayISO = isoFromDate(yesterdayBiz);
+            if (lastAutoSnapshotDate !== yesterdayISO) {
+                lastAutoSnapshotDate = yesterdayISO;
+                saveSnapshot(yesterdayISO, 'auto');
+            }
         }
     }
-
     async function checkMissingSnapshots() {
         if (!isAdmin) return;
-        const today = new Date();
+        const todayBiz = getBusinessDate();
         for (let i = 1; i <= 7; i++) {
-            const d   = new Date(today);
-            d.setDate(today.getDate() - i);
+            const d = new Date(todayBiz);
+            d.setDate(todayBiz.getDate() - i);
             const iso = isoFromDate(d);
             if (!snapshots[iso]) {
                 const thaiDate  = d.toLocaleDateString('th-TH');
@@ -934,69 +1051,53 @@
         }
         renderSnapshotHistory();
     }
-
     async function manualSaveSnapshot() {
         if (!isAdmin) return;
-        const todayISO = isoFromDate(new Date());
+        const todayISO = isoFromDate(getBusinessDate());
         await saveSnapshot(todayISO, 'manual');
         renderSnapshotHistory();
-        alert('✅ บันทึก snapshot วันนี้สำเร็จ');
+        toast('บันทึก snapshot วันนี้สำเร็จ', 'success');
     }
-
     async function saveStock() {
         if (!isAdmin || !isInitialLoadDone) return;
         const btn    = document.getElementById('btn-save-stock');
         const status = document.getElementById('stock-save-status');
         if (btn) { btn.disabled = true; btn.innerHTML = '⏳ กำลังบันทึก...'; }
-        // Group 1
-        db.stock.soy      = parseInt(document.getElementById('stock-soy').value)      || 0;
-        db.stock.ginger   = parseInt(document.getElementById('stock-ginger').value)   || 0;
-        db.stock.sesame   = parseInt(document.getElementById('stock-sesame').value)   || 0;
-        // Group 2
-        db.stock.custard  = parseInt(document.getElementById('stock-custard').value)  || 0;
-        db.stock.patongko = parseInt(document.getElementById('stock-patongko').value) || 0;
-        db.stock.mantou   = parseInt(document.getElementById('stock-mantou').value)   || 0;
-        // Group 3
-        db.stock.jelly      = parseInt(document.getElementById('stock-jelly').value)      || 0;
-        db.stock.basil      = parseInt(document.getElementById('stock-basil').value)      || 0;
-        db.stock.barley     = parseInt(document.getElementById('stock-barley').value)     || 0;
-        db.stock.redbeans   = parseInt(document.getElementById('stock-redbeans').value)   || 0;
-        db.stock.blackbeans = parseInt(document.getElementById('stock-blackbeans').value) || 0;
-        db.stock.ginkgo     = parseInt(document.getElementById('stock-ginkgo').value)     || 0;
-        db.stock.grain6     = parseInt(document.getElementById('stock-grain6').value)     || 0;
-        db.stock.tofu       = parseInt(document.getElementById('stock-tofu').value)       || 0;
-
+        ['soy','ginger','sesame','custard','patongko','mantou',
+         'jelly','basil','barley','redbeans','blackbeans','ginkgo','grain6','tofu'].forEach(f => {
+            const el = document.getElementById('stock-' + f);
+            db.stock[f] = parseInt(el && el.value) || 0;
+        });
         try {
             await firebaseFetch(STOCK_URL, { method:'PUT', body: JSON.stringify(db.stock) });
             saveLocal();
-            const todayKey = isoFromDate(new Date());
+            const todayKey = isoFromDate(getBusinessDate());
             if (snapshots[todayKey]) snapshots[todayKey].stock = Object.assign({}, db.stock);
             updateSalesSummary();
             renderStockChart();
             if (btn)    { btn.disabled = false; btn.innerHTML = '✅ บันทึกสำเร็จ'; }
             if (status) status.textContent = 'บันทึกแล้ว ' + new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+            toast('บันทึกต้นทุนสำเร็จ', 'success');
             setTimeout(() => { if(btn) btn.innerHTML = '💾 บันทึกต้นทุน'; }, 2000);
         } catch(e) {
             saveLocal();
-            const todayKey = isoFromDate(new Date());
+            const todayKey = isoFromDate(getBusinessDate());
             if (snapshots[todayKey]) snapshots[todayKey].stock = Object.assign({}, db.stock);
             updateSalesSummary();
             renderStockChart();
             if (btn)    { btn.disabled = false; btn.innerHTML = '⚠️ บันทึกเฉพาะเครื่อง'; }
             if (status) { status.textContent = 'ออฟไลน์ — บันทึกในเครื่อง'; status.style.color = '#e67e22'; }
+            toast('Offline — บันทึกเฉพาะเครื่อง', 'warn');
             setTimeout(() => { if(btn) btn.innerHTML = '💾 บันทึกต้นทุน'; }, 2500);
         }
     }
-
     function updateStockUI() {
-        const fields = ['soy','ginger','sesame','custard','patongko','mantou',
-                        'jelly','basil','barley','redbeans','blackbeans','ginkgo','grain6','tofu'];
-        fields.forEach(f => {
+        ['soy','ginger','sesame','custard','patongko','mantou',
+         'jelly','basil','barley','redbeans','blackbeans','ginkgo','grain6','tofu'].forEach(f => {
             const el = document.getElementById('stock-' + f);
             if (el) el.value = db.stock[f] || 0;
         });
     }
-
     // =============================================
     //  NAV
     // =============================================
@@ -1021,29 +1122,25 @@
             setTimeout(renderCharts, 80);
         }
     }
-
     // =============================================
     //  7-DAY SUMMARY
     // =============================================
     function setAnchorToToday() {
-        const t   = new Date();
+        const t   = getBusinessDate();
         const inp = document.getElementById('history-anchor-date');
         if (inp && !inp.value) inp.value = isoFromDate(t);
     }
-
     function gotoToday() {
-        document.getElementById('history-anchor-date').value = isoFromDate(new Date());
+        document.getElementById('history-anchor-date').value = isoFromDate(getBusinessDate());
         buildWeekSummary();
     }
-
     function buildWeekSummary() {
         const anchorInput = document.getElementById('history-anchor-date');
-        if (!anchorInput.value) anchorInput.value = isoFromDate(new Date());
+        if (!anchorInput.value) anchorInput.value = isoFromDate(getBusinessDate());
         const anchor    = new Date(anchorInput.value + 'T00:00:00');
-        const todayStr  = new Date().toLocaleDateString('th-TH');
+        const todayStr  = getBusinessDate().toLocaleDateString('th-TH');
         const container = document.getElementById('week-summary-list');
         let html = '';
-
         for (let i = 0; i <= 6; i++) {
             const d = new Date(anchor);
             d.setDate(anchor.getDate() - i);
@@ -1065,7 +1162,6 @@
             const countText = hasOrders
                 ? `${successOrders.length} สำเร็จ${cancelOrders.length > 0 ? ` · ${cancelOrders.length} ยกเลิก` : ''}`
                 : 'ไม่มีออเดอร์';
-
             html += `<div class="${rowClass}" id="wrow-${isoVal}">
                 <div class="week-row-main">
                     <div class="week-row-date">
@@ -1085,7 +1181,6 @@
         }
         container.innerHTML = html;
     }
-
     function toggleDayDetail(isoVal, thaiDateStr) {
         const wrap = document.getElementById(`detail-wrap-${isoVal}`);
         const btn  = document.getElementById(`btn-detail-${isoVal}`);
@@ -1101,7 +1196,6 @@
             selectedWeekDate = isoVal;
         }
     }
-
     function renderDayDetailInRow(isoVal, thaiDateStr, container) {
         const orders        = (db.orders || []).filter(o => o.date === thaiDateStr);
         const successOrders = orders.filter(o => o.status === 'เสร็จสิ้น');
@@ -1136,14 +1230,14 @@
         container.innerHTML = html;
         updateSalesSummary();
     }
-
     // =============================================
     //  MENUS & CART
     // =============================================
     function renderMenus() {
         const list = document.getElementById('menu-container');
         if (!db.menus || db.menus.length === 0) {
-            list.innerHTML = "<div style='text-align:center; padding:80px 20px; color:#bbb;'>ไม่มีรายการเมนู</div>";
+            list.innerHTML = "<div style='text-align:center; padding:80px 20px; color:#bbb;'>ไม่มีรายการเมนู</div>" + renderCustomItemCard();
+            calculateTotal();
             return;
         }
         list.innerHTML = db.menus.map((m, index) => {
@@ -1153,35 +1247,35 @@
                 ? `<span style="background:var(--gold);color:white;border-radius:10px;padding:1px 8px;font-size:10px;font-weight:700;margin-left:6px;">🛒 ${inCart}</span>`
                 : '';
             const hasToppings = m.options && m.options.length > 0;
-            const addBtnLabel = sel.opts.length > 0
-                ? `+ เพิ่มลงตะกร้า <small style="opacity:.8">(+${sel.opts.length} ท็อปปิ้ง)</small>`
-                : '+ เพิ่มลงตะกร้า';
+            const hasSelection = sel.opts.length > 0;
+            const addBtnLabel = hasSelection
+                ? `+ ใส่ตะกร้า <small style="opacity:.85; font-size:10px;">(+${sel.opts.length})</small>`
+                : '+ ใส่ตะกร้า';
             return `<div class="card" id="menu-card-${m.id}">
                 <div style="display:flex; gap:12px; align-items:center;">
-                    <img src="${m.img || 'https://via.placeholder.com/100'}" style="width:86px; height:86px; border-radius:12px; object-fit:cover;" onclick="zoom('${m.img}')">
+                    <img src="${m.img || 'https://via.placeholder.com/100'}" style="width:99px; height:99px; border-radius:14px; object-fit:cover; box-shadow:var(--shadow-sm);" onclick="zoom('${m.img}')">
                     <div style="flex:1; min-width:0;">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:4px;">
                             <div style="min-width:0;">
                                 <b style="font-size:15px; line-height:1.3;">${m.name}</b>${cartBadge}
                             </div>
                             ${isAdmin ? `<div style="display:flex; gap:5px; align-items:center; flex-shrink:0;">
-                                <span onclick="moveMenu(${index}, -1)" style="font-size:18px;">⬆️</span>
-                                <span onclick="moveMenu(${index}, 1)" style="font-size:18px;">⬇️</span>
-                                <span onclick="editMenu(${m.id})" style="color:#007bff; font-size:11px; font-weight:600; margin-left:5px;">แก้</span>
-                                <span onclick="delMenu(${m.id})" style="color:red; font-size:11px; font-weight:600;">ลบ</span>
+                                <span onclick="moveMenu(${index}, -1)" style="font-size:18px; cursor:pointer;">⬆️</span>
+                                <span onclick="moveMenu(${index}, 1)" style="font-size:18px; cursor:pointer;">⬇️</span>
+                                <span onclick="editMenu(${m.id})" style="color:#007bff; font-size:11px; font-weight:600; margin-left:5px; cursor:pointer;">แก้</span>
+                                <span onclick="delMenu(${m.id})" style="color:red; font-size:11px; font-weight:600; cursor:pointer;">ลบ</span>
                             </div>` : ''}
                         </div>
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin:4px 0 0; gap:6px;">
-                            <div style="color:var(--secondary); font-weight:700; font-size:17px;">฿${m.price}</div>
-                            <button class="btn-add-bag" onclick="addToCartAny(${m.id})"
-                                style="width:auto; font-size:11px; padding:6px 10px; border-radius:8px; flex-shrink:0;">${addBtnLabel}</button>
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin:6px 0 0; gap:6px;">
+                            <div style="color:var(--secondary); font-weight:700; font-size:18px;">฿${m.price}</div>
+                            <button class="btn-add-bag" onclick="addToCartAny(${m.id})">${addBtnLabel}</button>
                         </div>
                     </div>
                 </div>
                 ${hasToppings ? `
                 <div style="margin-top:10px;">
                     <div class="topping-container">${m.options.map(o => `
-                        <div class="topping-item" onclick="handleToppingClick(event, ${m.id}, '${o.name}')">
+                        <div class="topping-item ${sel.opts.includes(o.name) ? 'has-selection' : ''}" onclick="handleToppingClick(event, ${m.id}, '${o.name}')">
                             <div class="topping-left">
                                 <input type="checkbox" id="opt-${m.id}-${o.name}" ${sel.opts.includes(o.name) ? 'checked' : ''}>
                                 ${o.img ? `<img src="${o.img}" class="topping-img" onclick="event.stopPropagation(); zoom('${o.img}')">` : ''}
@@ -1195,73 +1289,109 @@
         }).join('') + renderCustomItemCard();
         calculateTotal();
     }
-
-    // ──────── Custom "อื่นๆ" item ────────────────────────────────────────────────
-    window._customItem = { name: '', price: 0, qty: 1, ml: 0 };
-
+    // ──────── Custom "อื่นๆ" item with custom toppings ────────────────────────
+    window._customItem = window._customItem || { name: '', price: 0, qty: 1, ml: 0, toppings: [] };
     function renderCustomItemCard() {
         const ci = window._customItem;
         const datalistOptions = (db.menus || []).map(m =>
             `<option value="${m.name}">`
         ).join('');
-
-        return `<div class="card" style="border:2px dashed var(--gold); margin-top:12px;">
+        const toppingsListHtml = (ci.toppings || []).map((t, i) =>
+            `<span class="cts-chip">${t.name} <b>+฿${t.price}</b><span class="cts-chip-x" onclick="removeCustomTopping(${i})">✕</span></span>`
+        ).join('');
+        return `<div class="card custom-item-card">
             <datalist id="menu-names-list">${datalistOptions}</datalist>
             <div style="display:flex; gap:12px; align-items:flex-start;">
-                <div style="width:86px;height:86px;border-radius:12px;background:linear-gradient(135deg,#f5e6b0,#ffd966);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:28px;">✨</div>
+                <div class="custom-item-icon">✨</div>
                 <div style="flex:1; min-width:0;">
-                    <b style="font-size:13px; color:#aaa;">รายการอื่นๆ</b>
+                    <div style="display:flex; align-items:baseline; gap:6px;">
+                        <b style="font-size:14px; color:var(--secondary);">รายการอื่นๆ</b>
+                        <small style="font-size:10px; color:#aaa;">เพิ่มเอง — ราคา + ท็อปปิ้ง</small>
+                    </div>
                     <input id="custom-name-input" type="text" list="menu-names-list"
-                        placeholder="ชื่ออาหาร (พิมพ์เองหรือเลือกจากรายการ)"
+                        placeholder="ชื่ออาหาร (พิมพ์เองหรือเลือกจากเมนู)"
                         value="${ci.name}"
                         oninput="window._customItem.name=this.value"
-                        style="width:100%;margin:6px 0 6px;border:1px solid #ddd;border-radius:8px;padding:7px 10px;font-family:inherit;font-size:14px;box-sizing:border-box;">
-                    <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap;">
-                        <div style="display:flex;align-items:center;gap:3px;">
-                            <span style="font-size:12px;color:#888;">จำนวน</span>
+                        style="width:100%; margin:6px 0 0; border:1px solid #ddd; border-radius:10px; padding:8px 10px; font-family:inherit; font-size:14px; box-sizing:border-box;">
+                    <div class="ci-pill-row">
+                        <span class="ci-pill">
+                            <span class="ci-label">จำนวน</span>
                             <input id="custom-qty-input" type="number" min="1" value="${ci.qty || 1}"
-                                oninput="window._customItem.qty=parseInt(this.value)||1"
-                                style="width:48px;border:1px solid #ddd;border-radius:8px;padding:5px 6px;font-family:inherit;font-size:13px;font-weight:700;text-align:center;">
-                        </div>
-                        <div style="display:flex;align-items:center;gap:3px;">
-                            <span style="font-size:12px;color:#888;">ml</span>
-                            <input id="custom-ml-input" type="number" min="0" placeholder="0"  value="${ci.ml || ''}"
-                                oninput="window._customItem.ml=parseFloat(this.value)||0"
-                                style="width:60px;border:1px solid #1565C0;border-radius:8px;padding:5px 6px;font-family:inherit;font-size:13px;font-weight:700;text-align:center;color:#1565C0;">
-                            <span style="font-size:11px;color:#1565C0;">ml</span>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:3px;">
-                            <span style="color:var(--secondary);font-weight:700;font-size:15px;">฿</span>
+                                oninput="window._customItem.qty=parseInt(this.value)||1">
+                        </span>
+                        <span class="ci-pill ml">
+                            <span class="ci-label">ml</span>
+                            <input id="custom-ml-input" type="number" min="0" placeholder="0" value="${ci.ml || ''}"
+                                oninput="window._customItem.ml=parseFloat(this.value)||0">
+                        </span>
+                        <span class="ci-pill price">
+                            <span class="ci-label">฿</span>
                             <input id="custom-price-input" type="number" min="0" placeholder="ราคา" value="${ci.price || ''}"
-                                oninput="window._customItem.price=parseFloat(this.value)||0"
-                                style="width:70px;border:1px solid #ddd;border-radius:8px;padding:5px 8px;font-family:inherit;font-size:14px;font-weight:700;color:var(--secondary);">
-                        </div>
-                        <button onclick="addCustomItemToCart()" style="background:var(--gold);color:white;border:none;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">+ เพิ่ม</button>
+                                oninput="window._customItem.price=parseFloat(this.value)||0">
+                        </span>
                     </div>
-                    <p style="font-size:10px;color:#bbb;margin:5px 0 0;">💡 ใส่ ml เพื่อให้ระบบหักสต็อก (ถ้าไม่ใส่ = ไม่หักสต็อก)</p>
+                    <p style="font-size:10px; color:#bbb; margin:6px 0 0;">💡 ใส่ ml ถ้าต้องการให้ระบบหักสต็อก (ไม่ใส่ = ไม่หักสต็อก)</p>
                 </div>
             </div>
+            <div class="custom-toppings-section">
+                <div class="cts-header">🧁 ท็อปปิ้งเพิ่มเติม (กำหนดเอง)</div>
+                <div class="cts-add-row">
+                    <input id="cts-topping-name" type="text" placeholder="ชื่อท็อปปิ้ง">
+                    <input id="cts-topping-price" type="number" placeholder="+฿" min="0">
+                    <button class="cts-add-btn" onclick="addCustomTopping()">+ เพิ่ม</button>
+                </div>
+                <div class="cts-list" id="cts-list">${toppingsListHtml || '<span style="font-size:10px; color:#bbb;">ยังไม่มีท็อปปิ้ง</span>'}</div>
+            </div>
+            <button class="btn-add-bag" style="width:100%; margin-top:10px; padding:10px; font-size:13px; border-radius:12px;" onclick="addCustomItemToCart()">+ เพิ่มลงตะกร้า</button>
         </div>`;
     }
-
-    function addCustomItemToCart() {
-        const nameEl  = document.getElementById('custom-name-input');
-        const priceEl = document.getElementById('custom-price-input');
-        const qtyEl   = document.getElementById('custom-qty-input');
-        const mlEl    = document.getElementById('custom-ml-input');
-        const name  = nameEl  ? nameEl.value.trim()        : window._customItem.name;
-        const price = priceEl ? parseFloat(priceEl.value) || 0 : window._customItem.price;
-        const qty   = qtyEl   ? parseInt(qtyEl.value)   || 1   : window._customItem.qty || 1;
-        const ml    = mlEl    ? parseFloat(mlEl.value)  || 0   : window._customItem.ml  || 0;
-        if (!name)  { alert('กรุณาใส่ชื่ออาหาร'); return; }
-        if (!price) { alert('กรุณาใส่ราคา'); return; }
-        const displayName = ml > 0 ? `${name} ${ml}ml` : name;
-        bags.push({ id: 'custom_' + Date.now(), name: displayName, price, qty, ml, opts: [], optPrice: 0 });
-        window._customItem = { name: '', price: 0, qty: 1, ml: 0 };
+    function addCustomTopping() {
+        const nameEl  = document.getElementById('cts-topping-name');
+        const priceEl = document.getElementById('cts-topping-price');
+        const name  = nameEl ? nameEl.value.trim() : '';
+        const price = priceEl ? parseFloat(priceEl.value) || 0 : 0;
+        if (!name) { toast('กรุณาใส่ชื่อท็อปปิ้ง', 'warn'); return; }
+        if (!window._customItem.toppings) window._customItem.toppings = [];
+        window._customItem.toppings.push({ name, price });
+        nameEl.value = ''; priceEl.value = '';
+        renderMenus();
+        // เลื่อนไปจุดเดิม (custom card อยู่ท้าย)
+        setTimeout(() => {
+            const el = document.getElementById('cts-topping-name');
+            if (el) el.focus();
+        }, 50);
+    }
+    function removeCustomTopping(idx) {
+        if (!window._customItem.toppings) return;
+        window._customItem.toppings.splice(idx, 1);
         renderMenus();
     }
-
-
+    function addCustomItemToCart() {
+        const ci = window._customItem;
+        const name  = (ci.name || '').trim();
+        const price = parseFloat(ci.price) || 0;
+        const qty   = parseInt(ci.qty) || 1;
+        const ml    = parseFloat(ci.ml) || 0;
+        const toppings = ci.toppings || [];
+        if (!name)  { toast('กรุณาใส่ชื่ออาหาร', 'warn'); return; }
+        if (!price) { toast('กรุณาใส่ราคา', 'warn'); return; }
+        const displayName = ml > 0 ? `${name} ${ml}ml` : name;
+        const optNames    = toppings.map(t => t.name);
+        const optPrice    = toppings.reduce((a, b) => a + (parseFloat(b.price) || 0), 0);
+        bags.push({
+            id: 'custom_' + Date.now(),
+            name: displayName,
+            price,
+            qty,
+            ml,
+            opts: optNames,
+            optPrice,
+            customToppings: toppings
+        });
+        window._customItem = { name: '', price: 0, qty: 1, ml: 0, toppings: [] };
+        renderMenus();
+        toast('เพิ่ม "' + displayName + '" เรียบร้อย', 'success');
+    }
     function addToCartAny(menuId) {
         const menu = db.menus.find(m => m.id === menuId);
         if (!menu) return;
@@ -1275,8 +1405,8 @@
         if (!activeSelection[menuId]) activeSelection[menuId] = { opts: [] };
         activeSelection[menuId].opts = [];
         renderMenus();
+        toast('+ ' + menu.name, 'success');
     }
-
     function handleToppingClick(event, mid, optName) {
         if (!activeSelection[mid]) activeSelection[mid] = { opts: [] };
         let idx = activeSelection[mid].opts.indexOf(optName);
@@ -1284,61 +1414,73 @@
         else activeSelection[mid].opts.push(optName);
         renderMenus();
     }
-
+    function incBag(index) {
+        if (bags[index]) { bags[index].qty += 1; renderMenus(); }
+    }
+    function decBag(index) {
+        if (!bags[index]) return;
+        if (bags[index].qty > 1) bags[index].qty -= 1;
+        else bags.splice(index, 1);
+        renderMenus();
+    }
     function calculateTotal() {
         let total = 0, summaryHtml = "";
         bags.forEach((b, index) => {
-            const itemTotal = (b.price + b.optPrice) * b.qty;
+            const itemTotal = (b.price + (b.optPrice || 0)) * b.qty;
             total += itemTotal;
+            const optsTxt = b.opts && b.opts.length > 0 ? ' <small style="color:var(--gold);">(' + b.opts.join(', ') + ')</small>' : '';
             summaryHtml += `<div class="cart-item-row">
-                <span><b style='color:var(--secondary)'>${index+1}.</b> ${b.name}${b.opts.length > 0 ? ' <small>(ถุงพิเศษ: ' + b.opts.join(',') + ')</small>' : ''} <b>x${b.qty}</b></span>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span>฿${itemTotal}</span>
-                    <span onclick="removeBag(${index})" style="color:red; font-weight:bold; font-size:16px; padding:0 4px;">✕</span>
+                <span style="flex:1; min-width:0;"><b style='color:var(--secondary)'>${index+1}.</b> ${b.name}${optsTxt}</span>
+                <div class="cart-qty-controls">
+                    <button class="cart-qty-btn" onclick="decBag(${index})">−</button>
+                    <span class="cart-qty-val">${b.qty}</span>
+                    <button class="cart-qty-btn" onclick="incBag(${index})">+</button>
                 </div>
+                <span style="min-width:42px; text-align:right; font-weight:700;">฿${itemTotal}</span>
             </div>`;
         });
         const btn     = document.getElementById('btn-submit');
         const preview = document.getElementById('cart-preview');
         if (total > 0) {
             preview.style.display = 'block';
-            preview.innerHTML = `<div style="font-weight:700; margin-bottom:5px; color:var(--secondary);">ตะกร้าของคุณ:</div>${summaryHtml}`;
+            preview.innerHTML = `<div style="font-weight:700; margin-bottom:5px; color:var(--secondary);">🧺 ตะกร้าของคุณ:</div>${summaryHtml}`;
             btn.disabled = false; btn.textContent = `ส่งรายการอาหาร - ฿${total}`;
         } else {
             preview.style.display = 'none'; btn.disabled = true; btn.textContent = "กรุณาเลือกเมนู";
         }
         requestAnimationFrame(function(){ var bar=document.getElementById('order-bottom-bar'); var page=document.getElementById('order-page'); if(bar&&page) page.style.paddingBottom=(bar.offsetHeight+16)+'px'; });
     }
-
     function removeBag(index) { bags.splice(index, 1); renderMenus(); }
-
     async function confirmAndPlaceOrder() {
         if (bags.length === 0) return;
         if (confirm('คุณต้องการส่งรายการอาหารนี้ใช่หรือไม่?')) await placeOrder();
     }
-
     async function placeOrder() {
         let total = 0;
-        let orderRawDetails    = bags.map(b => { total += (b.price + b.optPrice) * b.qty; return { name: b.name, qty: b.qty, toppings: b.opts, ml: b.ml || 0 }; });
-        let orderItemsForDisplay = bags.map(b => `${b.name}${b.opts.length > 0 ? ' [' + b.opts.join(', ') + ']' : ''} x${b.qty}`);
+        let orderRawDetails    = bags.map(b => {
+            total += (b.price + (b.optPrice || 0)) * b.qty;
+            return { name: b.name, qty: b.qty, toppings: b.opts || [], ml: b.ml || 0, customToppings: b.customToppings || null };
+        });
+        let orderItemsForDisplay = bags.map(b => `${b.name}${b.opts && b.opts.length > 0 ? ' [' + b.opts.join(', ') + ']' : ''} x${b.qty}`);
         let displayName = isAdmin ? "เจ้าของร้าน" : isStaff ? "คนขาย" : `ลูกค้า (${user})`;
+        const now = new Date();
         db.orders.unshift({
             id: Date.now(), uid: userId, user: displayName,
             items: orderItemsForDisplay, raw_details: orderRawDetails,
             total, status: "รอดำเนินการ",
-            time: new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'}),
-            date: new Date().toLocaleDateString('th-TH'),
-            timestamp: Date.now(),
+            time: now.toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'}),
+            // 🔑 ใช้ business date — ก่อน 06:00 = นับเป็นวันก่อนหน้า
+            date: getBusinessThaiDateStr(now),
+            timestamp: now.getTime(),
             staff_in_charge: (isAdmin || isStaff) ? user : "ลูกค้าสั่งเอง"
         });
         await saveOrders();
         bags = []; activeSelection = {};
         renderMenus();
-        alert('✅ ส่งรายการอาหารสำเร็จ');
-        historyDate = new Date();
+        toast('✅ ส่งรายการอาหารสำเร็จ', 'success');
+        historyDate = getBusinessDate();
         navTo('history-page');
     }
-
     // =============================================
     //  SNAPSHOT HISTORY RENDER
     // =============================================
@@ -1350,19 +1492,16 @@
             container.innerHTML = '<p style="font-size:12px; color:#bbb; text-align:center; padding:15px;">ยังไม่มีข้อมูล — จะบันทึกครั้งแรกเวลา 06:00</p>';
             return;
         }
-
         const allStockItems = [...STOCK_GROUP_1, ...STOCK_GROUP_2, ...STOCK_GROUP_3];
-
         container.innerHTML = entries.map(([isoDate, snap]) => {
             const d        = new Date(isoDate + 'T00:00:00');
-            const isToday  = isoDate === isoFromDate(new Date());
+            const isToday  = isoDate === isoFromDate(getBusinessDate());
             const dayLabel = isToday
                 ? `🔔 วันนี้ — ${thDaysShort[d.getDay()]} ${d.getDate()} ${thMonths[d.getMonth()]} ${d.getFullYear()+543}`
                 : `${thDaysShort[d.getDay()]} ${d.getDate()} ${thMonths[d.getMonth()]} ${d.getFullYear()+543}`;
-            const badge = snap.trigger === 'auto' ? '<span class="snap-auto-badge">อัตโนมัติ</span>'
+            const badge = snap.trigger === 'auto' ? '<span class="snap-auto-badge">อัตโนมัติ 06:00</span>'
                         : snap.trigger === 'recovery' ? '<span class="snap-manual-badge">กู้คืน</span>'
                         : '<span class="snap-manual-badge">manual</span>';
-
             const detailRows = allStockItems.map(item => {
                 const cost   = (snap.stock && snap.stock[item.id]) || 0;
                 const sold   = (snap.sold  && snap.sold[item.id])  || 0;
@@ -1374,7 +1513,6 @@
                     <td style="font-weight:700; ${remain < 0 ? 'color:red;' : remain === 0 && cost > 0 ? 'color:#888;' : ''}">${remain} ${item.unit}</td>
                 </tr>`;
             }).join('');
-
             return `<div class="snap-row" id="snaprow-${isoDate}">
                 <div class="snap-row-main">
                     <div class="snap-row-date">
@@ -1397,7 +1535,6 @@
             </div>`;
         }).join('');
     }
-
     function toggleSnapDetail(isoDate) {
         const wrap = document.getElementById(`snapdetail-${isoDate}`);
         const btn  = document.getElementById(`snapbtn-${isoDate}`);
@@ -1407,7 +1544,6 @@
         document.querySelectorAll('.btn-snap-detail.open').forEach(el => { el.classList.remove('open'); el.textContent = 'รายละเอียด'; });
         if (!isOpen) { wrap.classList.add('show'); btn.classList.add('open'); btn.textContent = 'ซ่อน'; }
     }
-
     // =============================================
     //  SALES SUMMARY
     // =============================================
@@ -1415,15 +1551,13 @@
         const filterDateVal = document.getElementById('manage-date-filter').value;
         const targetDateStr = filterDateVal
             ? new Date(filterDateVal + 'T00:00:00').toLocaleDateString('th-TH')
-            : new Date().toLocaleDateString('th-TH');
+            : getBusinessDate().toLocaleDateString('th-TH');
         const summaryDiv = document.getElementById('item-sales-summary');
         if (!isAdmin) return;
-
         let salesByStock = {};
         const allItems = [...STOCK_GROUP_1, ...STOCK_GROUP_2, ...STOCK_GROUP_3];
         allItems.forEach(i => salesByStock[i.id] = 0);
         let itemCounts = {};
-
         db.orders.forEach(o => {
             if (o.date === targetDateStr && o.status === 'เสร็จสิ้น' && o.raw_details) {
                 o.raw_details.forEach(bag => {
@@ -1449,18 +1583,15 @@
                 });
             }
         });
-
         const groups = [
             { label: 'กลุ่ม 1 — น้ำดื่ม', items: STOCK_GROUP_1 },
             { label: 'กลุ่ม 2 — ของแห้ง/อาหาร', items: STOCK_GROUP_2 },
             { label: 'กลุ่ม 3 — ท็อปปิ้ง', items: STOCK_GROUP_3 }
         ];
-
         let html = `<table class="summary-table"><thead><tr>
             <th>รายการ</th><th style="text-align:center;">ต้นทุน</th>
             <th style="text-align:center;">ขายไป</th><th style="text-align:center;">คงเหลือ</th>
         </tr></thead><tbody>`;
-
         groups.forEach(g => {
             html += `<tr><th colspan="4" style="background:#f5f0e8; font-size:10px; padding:5px 8px; color:var(--secondary);">${g.label}</th></tr>`;
             g.items.forEach(item => {
@@ -1475,7 +1606,6 @@
                 </tr>`;
             });
         });
-
         const toppings = Object.entries(itemCounts).filter(([n]) => n.startsWith("Topping:"));
         if (toppings.length > 0) {
             html += `<tr><th colspan="4" style="background:#f0f0f0; font-size:10px; padding:4px;">สรุปยอดขาย Topping</th></tr>`;
@@ -1485,7 +1615,6 @@
         }
         summaryDiv.innerHTML = html + '</tbody></table>';
     }
-
     // =============================================
     //  SHOP / MENU MANAGEMENT
     // =============================================
@@ -1494,7 +1623,6 @@
         document.getElementById('pp-input-group').style.display  = type === 'promptpay' ? 'block' : 'none';
         document.getElementById('custom-qr-group').style.display = type === 'custom'    ? 'block' : 'none';
     }
-
     function openShopEditModal() {
         if (!isAdmin) return;
         document.getElementById('edit-shop-name').value = db.shop.name;
@@ -1505,7 +1633,6 @@
         toggleQRInput();
         document.getElementById('shop-edit-modal').style.display = 'flex';
     }
-
     async function saveShopInfo() {
         db.shop.name    = document.getElementById('edit-shop-name').value.trim();
         db.shop.sub     = document.getElementById('edit-shop-sub').value.trim();
@@ -1513,9 +1640,8 @@
         db.shop.pp      = document.getElementById('edit-shop-pp').value.trim();
         if (tempLogoImg) db.shop.logo      = tempLogoImg;
         if (tempQRImg)   db.shop.custom_qr = tempQRImg;
-        await saveContent(); updateShopUI(); closeModal('shop-edit-modal'); alert('บันทึกแล้ว');
+        await saveContent(); updateShopUI(); closeModal('shop-edit-modal'); toast('บันทึกข้อมูลร้านสำเร็จ', 'success');
     }
-
     async function moveMenu(i, d) {
         let n = i + d;
         if (n < 0 || n >= db.menus.length) return;
@@ -1523,7 +1649,6 @@
         db.menus.forEach((m, x) => m.order = x);
         renderMenus(); await saveContent();
     }
-
     function openAddMenuModal() {
         if (!isAdmin) return;
         document.getElementById('modal-title').textContent = "เพิ่มเมนูใหม่";
@@ -1532,7 +1657,6 @@
         tempOpts = []; tempMImg = ""; renderToppingEdit();
         document.getElementById('admin-modal').style.display = 'flex';
     }
-
     function editMenu(id) {
         if (!isAdmin) return;
         const m = db.menus.find(x => x.id === id); if (!m) return;
@@ -1543,7 +1667,6 @@
         tempOpts = m.options ? JSON.parse(JSON.stringify(m.options)) : []; tempMImg = m.img || "";
         renderToppingEdit(); document.getElementById('admin-modal').style.display = 'flex';
     }
-
     function renderToppingEdit() {
         const c = document.getElementById('opt-list-edit');
         if (tempOpts.length === 0) { c.innerHTML = "<small style='color:#999;'>ไม่มีท็อปปิ้ง</small>"; return; }
@@ -1562,7 +1685,6 @@
                 </div>
             </div>`).join('');
     }
-
     function updateTempOpt(idx, key, val) { tempOpts[idx][key] = key === 'price' ? parseInt(val) || 0 : val; }
     function removeTopping(idx) { if (confirm('ลบท็อปปิ้งนี้?')) { tempOpts.splice(idx, 1); renderToppingEdit(); } }
     function editToppingImg(idx, input) {
@@ -1571,44 +1693,38 @@
         reader.onload = e => { let img = new Image(); img.onload = () => { let canvas = document.createElement('canvas'); let ms = 200; let w = img.width, h = img.height; if (w > h) { if (w > ms) { h *= ms/w; w = ms; } } else { if (h > ms) { w *= ms/h; h = ms; } } canvas.width = w; canvas.height = h; canvas.getContext('2d').drawImage(img, 0, 0, w, h); tempOpts[idx].img = canvas.toDataURL('image/jpeg', 0.7); renderToppingEdit(); }; img.src = e.target.result; };
         reader.readAsDataURL(input.files[0]);
     }
-
     async function saveMenu() {
         let n = document.getElementById('m-name').value;
         let p = document.getElementById('m-price').value;
         let e = document.getElementById('edit-menu-id').value;
-        if (!n || !p) return alert('ใส่ข้อมูลให้ครบ');
+        if (!n || !p) return toast('ใส่ข้อมูลให้ครบ', 'warn');
         if (e) { let i = db.menus.findIndex(x => x.id == e); db.menus[i] = { ...db.menus[i], name: n, price: parseInt(p), img: tempMImg || db.menus[i].img, options: tempOpts }; }
         else   { db.menus.push({ id: Date.now(), name: n, price: parseInt(p), img: tempMImg, options: tempOpts, order: db.menus.length }); }
-        await saveContent(); closeModal('admin-modal'); renderMenus();
+        await saveContent(); closeModal('admin-modal'); renderMenus(); toast('บันทึกเมนูสำเร็จ', 'success');
     }
-
     function addOptToTemp() {
         let n = document.getElementById('o-name').value, p = document.getElementById('o-price').value;
         if (n && p) { tempOpts.push({ name: n, price: parseInt(p), img: tempOImg }); document.getElementById('o-name').value = ''; document.getElementById('o-price').value = ''; tempOImg = ""; renderToppingEdit(); }
-        else alert('กรอกชื่อและราคา');
+        else toast('กรอกชื่อและราคา', 'warn');
     }
-
     // =============================================
     //  AUTH
     // =============================================
     function enterAsCustomer() {
         let n = document.getElementById('input-username').value.trim();
-        if (!n) return alert('ใส่ชื่อของคุณ');
+        if (!n) return toast('ใส่ชื่อของคุณ', 'warn');
         user = n; localStorage.setItem('puretao_user_name', user);
         document.getElementById('id-overlay').style.display = 'none';
         document.getElementById('btn-logout-main').style.display = 'block';
         updateUserLabels(); renderMenus();
     }
-
     function enterAsStaffOrAdmin() {
         let p = prompt("รหัสผ่าน:");
         if      (p === '3o3o3o3o') { isAdmin = true; sessionStorage.setItem('puretao_role', 'admin'); document.getElementById('id-overlay').style.display = 'none'; enableRoleMode('เจ้าของร้าน'); navTo('history-page'); }
         else if (p === 'pppp') { isStaff = true; sessionStorage.setItem('puretao_role', 'staff'); document.getElementById('id-overlay').style.display = 'none'; enableRoleMode('คนขาย');       navTo('history-page'); }
-        else if (p !== null)   { alert("รหัสผ่านไม่ถูกต้อง"); }
+        else if (p !== null)   { toast("รหัสผ่านไม่ถูกต้อง", 'error'); }
     }
-
     function logout() { if (confirm('ออกจากระบบ?')) { localStorage.clear(); sessionStorage.clear(); location.reload(); } }
-
     function enableRoleMode(r) {
         const b = document.getElementById('role-badge'); b.style.display = 'block'; b.textContent = r;
         document.getElementById('btn-logout-main').style.display = 'block';
@@ -1620,7 +1736,6 @@
             document.getElementById('manage-summary-section').style.display = 'none';
         }
     }
-
     // =============================================
     //  UTILS
     // =============================================
@@ -1630,7 +1745,6 @@
         reader.onload = e => { let img = new Image(); img.onload = () => { let canvas = document.createElement('canvas'); let ms = (m === 'logo' || m === 'qr_custom') ? 500 : 400; let w = img.width, h = img.height; if (w > h) { if (w > ms) { h *= ms/w; w = ms; } } else { if (h > ms) { w *= ms/h; h = ms; } } canvas.width = w; canvas.height = h; canvas.getContext('2d').drawImage(img, 0, 0, w, h); let dataUrl = canvas.toDataURL('image/jpeg', 0.8); if (m==='menu') tempMImg=dataUrl; else if (m==='logo') tempLogoImg=dataUrl; else if (m==='qr_custom') tempQRImg=dataUrl; else tempOImg=dataUrl; }; img.src = e.target.result; };
         reader.readAsDataURL(i.files[0]);
     }
-
     function updateShopUI() {
         document.getElementById('ui-name').textContent           = db.shop.name;
         document.getElementById('ui-sub').textContent            = db.shop.sub;
@@ -1638,14 +1752,12 @@
         document.getElementById('landing-shop-sub').textContent  = db.shop.sub;
         if (db.shop.logo) { document.getElementById('ui-logo').src = db.shop.logo; document.getElementById('landing-logo').src = db.shop.logo; }
     }
-
     function updateUserLabels() { document.querySelectorAll('.customer-name-label').forEach(el => el.textContent = user); }
     function zoom(s) { if (s) { document.getElementById('zoom-modal').style.display = 'flex'; document.getElementById('zoom-img').src = s; } }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    async function delMenu(id) { if (!isAdmin) return; if (confirm('ยืนยันการลบ?')) { db.menus = db.menus.filter(m => m.id !== id); await saveContent(); renderMenus(); } }
-    function exportData() { if (!isAdmin) return; const b = new Blob([JSON.stringify(db)], {type:"application/json"}); const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href = u; a.download = `puretao_db_${Date.now()}.json`; a.click(); }
-    function importData(i) { if (!isAdmin) return; const r = new FileReader(); r.onload = async e => { try { const j = JSON.parse(e.target.result); if (confirm('เขียนทับข้อมูล?')) { db = j; await saveContent(); await saveOrders(); location.reload(); } } catch { alert('ไฟล์ผิดพลาด'); } }; r.readAsText(i.files[0]); }
-
+    async function delMenu(id) { if (!isAdmin) return; if (confirm('ยืนยันการลบ?')) { db.menus = db.menus.filter(m => m.id !== id); await saveContent(); renderMenus(); toast('ลบเมนูแล้ว', 'warn'); } }
+    function exportData() { if (!isAdmin) return; const b = new Blob([JSON.stringify(db)], {type:"application/json"}); const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href = u; a.download = `puretao_db_${Date.now()}.json`; a.click(); toast('ส่งออกสำเร็จ', 'success'); }
+    function importData(i) { if (!isAdmin) return; const r = new FileReader(); r.onload = async e => { try { const j = JSON.parse(e.target.result); if (confirm('เขียนทับข้อมูล?')) { db = j; await saveContent(); await saveOrders(); location.reload(); } } catch { toast('ไฟล์ผิดพลาด', 'error'); } }; r.readAsText(i.files[0]); }
     async function clearAllOrders() {
         if (!isAdmin) return;
         if (confirm('⚠️ ลบออเดอร์ทั้งหมดในระบบ ข้อมูลไม่สามารถกู้คืนได้')) {
@@ -1654,14 +1766,13 @@
             renderOrders();
             buildWeekSummary();
             updateSalesSummary();
-            alert('ล้างออเดอร์ทั้งหมดสำเร็จ');
+            toast('ล้างออเดอร์ทั้งหมดสำเร็จ', 'warn');
         }
     }
-
     async function clearOrdersByDate() {
         if (!isAdmin) return;
         const filterDateVal = document.getElementById('manage-date-filter').value;
-        if (!filterDateVal) return alert('กรุณาเลือกวันที่จาก Date Picker ด้านบน');
+        if (!filterDateVal) return toast('กรุณาเลือกวันที่ก่อน', 'warn');
         const targetDateStr = new Date(filterDateVal + 'T00:00:00').toLocaleDateString('th-TH');
         if (confirm(`ยืนยันการลบออเดอร์ทั้งหมดของวันที่ ${targetDateStr}?`)) {
             db.orders = db.orders.filter(o => o.date !== targetDateStr);
@@ -1669,13 +1780,9 @@
             renderOrders();
             buildWeekSummary();
             updateSalesSummary();
-            alert(`ล้างออเดอร์วันที่ ${targetDateStr} สำเร็จ`);
+            toast(`ล้างออเดอร์วันที่ ${targetDateStr} แล้ว`, 'warn');
         }
     }
-
-    // =============================================
-    //  STOCK INPUT PANEL TOGGLE
-    // =============================================
     function toggleStockInput() {
         var body  = document.getElementById('stock-input-body');
         var arrow = document.getElementById('stock-panel-arrow');
@@ -1684,12 +1791,10 @@
         body.style.display  = isOpen ? 'none' : 'block';
         arrow.textContent   = isOpen ? '▼' : '▲';
     }
-
     // =============================================
-    //  LINE CHART SYSTEM (revenue only)
+    //  LINE CHART SYSTEM
     // =============================================
     var chartRange = 'week';
-
     function setChartRange(r) {
         chartRange = r;
         ['week','month','custom'].forEach(function(t){
@@ -1700,7 +1805,7 @@
         if (cw) {
             if (r === 'custom') {
                 cw.classList.add('show');
-                var today = new Date(); var d7 = new Date(); d7.setDate(today.getDate()-6);
+                var today = getBusinessDate(); var d7 = new Date(today); d7.setDate(today.getDate()-6);
                 var si = document.getElementById('cr-start'); var ei = document.getElementById('cr-end');
                 if (si && !si.value) si.value = isoFromDate(d7);
                 if (ei && !ei.value) ei.value = isoFromDate(today);
@@ -1710,9 +1815,8 @@
             }
         }
     }
-
     function getChartDates() {
-        var today = new Date(); var dates = [];
+        var today = getBusinessDate(); var dates = [];
         if (chartRange === 'custom') {
             var sv = document.getElementById('cr-start'); var ev = document.getElementById('cr-end');
             if (!sv || !sv.value || !ev || !ev.value) return [];
@@ -1725,14 +1829,11 @@
         }
         return dates;
     }
-
     function cLabel(iso) { var d=new Date(iso+'T00:00:00'); return d.getDate()+'/'+thMonths[d.getMonth()]; }
-
     function getRevForISO(iso) {
         var td=new Date(iso+'T00:00:00').toLocaleDateString('th-TH');
         return (db.orders||[]).filter(function(o){return o.date===td&&o.status==='เสร็จสิ้น';}).reduce(function(s,o){return s+o.total;},0);
     }
-
     function getSoldForISO(iso, item) {
         if (snapshots[iso] && snapshots[iso].sold && snapshots[iso].sold[item] !== undefined) return snapshots[iso].sold[item];
         var td = new Date(iso+'T00:00:00').toLocaleDateString('th-TH');
@@ -1761,14 +1862,12 @@
         });
         return sold;
     }
-
     function getStockForISO(iso, item) {
-        var todayISO = isoFromDate(new Date());
+        var todayISO = isoFromDate(getBusinessDate());
         if (iso === todayISO) return db.stock[item] || 0;
         if (snapshots[iso] && snapshots[iso].stock && snapshots[iso].stock[item] !== undefined) return snapshots[iso].stock[item];
         return db.stock[item] || 0;
     }
-
     function setStockGroup(g) {
         currentStockGroup = g;
         [1,2,3].forEach(function(n){
@@ -1777,10 +1876,7 @@
         });
         renderStockChart();
     }
-
     function renderCharts() { renderRevenueChart(); renderStockChart(); }
-
-    // ========== REVENUE LINE CHART ==========
     function renderRevenueChart() {
         var dates  = getChartDates();
         var labels = dates.map(cLabel);
@@ -1791,18 +1887,13 @@
             function(v){ return v>=1000 ? (v/1000).toFixed(1)+'k' : '฿'+v; }
         );
     }
-
-    // ========== STOCK GROUPED BAR CHART ==========
     function renderStockChart() {
         var dates  = getChartDates();
         var labels = dates.map(cLabel);
         if (dates.length === 0) { clearCanvas('c-stock','📅 เลือกช่วงวันที่ แล้วกด "ดูกราฟ"'); updateStockBarLegend([]); return; }
-
         var group = currentStockGroup === 1 ? STOCK_GROUP_1
                   : currentStockGroup === 2 ? STOCK_GROUP_2
                   : STOCK_GROUP_3;
-
-        // Build datasets: for each item → cost bars + sold bars
         var datasets = [];
         group.forEach(function(item){
             var costData = dates.map(function(iso){ return getStockForISO(iso, item.id); });
@@ -1810,11 +1901,9 @@
             datasets.push({ label: item.label + ' ต้นทุน', data: costData, color: item.color, alpha: 0.85 });
             datasets.push({ label: item.label + ' ขาย',    data: soldData, color: item.color, alpha: 0.35 });
         });
-
         drawGroupedBarChart('c-stock', labels, datasets, null);
         updateStockBarLegend(group);
     }
-
     function updateStockBarLegend(group) {
         var legend = document.getElementById('stock-bar-legend');
         if (!legend) return;
@@ -1827,8 +1916,6 @@
             '</div>';
         }).join('');
     }
-
-    /** วาดกราฟแท่งแบบ grouped (ต้นทุน+ขาย คู่กัน) */
     function drawGroupedBarChart(canvasId, labels, datasets, yFmt) {
         var canvas = document.getElementById(canvasId);
         if (!canvas) return;
@@ -1837,21 +1924,16 @@
         canvas.width  = W;
         canvas.height = H;
         var ctx = canvas.getContext('2d');
-
         var ML = 46, MR = 8, MT = 28, MB = 38;
         var CW = W - ML - MR, CH = H - MT - MB;
         ctx.clearRect(0, 0, W, H);
-
         var allVals = datasets.reduce(function(a,ds){ return a.concat(ds.data); }, []);
         var maxV    = Math.max.apply(null, allVals.concat([1]));
         var niceMax = Math.ceil(maxV / 5) * 5;
         if (niceMax === 0) niceMax = 10;
-
         var n  = labels.length;
         var nd = datasets.length;
         if (n === 0) return;
-
-        // Grid + Y labels
         ctx.font = '9px sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
         for (var gi = 0; gi <= 5; gi++) {
             var gy = MT + CH - (gi / 5) * CH;
@@ -1861,23 +1943,18 @@
             ctx.fillStyle = '#aaa';
             ctx.fillText(yFmt ? yFmt(gv) : (gv >= 1000 ? (gv/1000).toFixed(1)+'k' : Math.round(gv)), ML - 4, gy);
         }
-        // X-axis
         ctx.strokeStyle = '#ddd'; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.moveTo(ML, MT + CH); ctx.lineTo(ML + CW, MT + CH); ctx.stroke();
-
         var groupW  = CW / n;
         var padding = Math.max(2, groupW * 0.08);
         var barW    = Math.max(2, (groupW - padding * 2) / nd - 1);
-
         datasets.forEach(function(ds, di) {
             ds.data.forEach(function(val, i) {
                 var x  = ML + i * groupW + padding + di * (barW + 1);
                 var bh = Math.max(0, (val / niceMax) * CH);
                 var by = MT + CH - bh;
-                // Parse color and apply alpha
                 ctx.globalAlpha = ds.alpha || 0.85;
                 ctx.fillStyle   = ds.color;
-                // Rounded top
                 var r = Math.min(3, barW / 2, bh / 2);
                 ctx.beginPath();
                 if (bh > 0) {
@@ -1894,8 +1971,6 @@
             });
         });
         ctx.globalAlpha = 1;
-
-        // X labels
         ctx.fillStyle = '#888'; ctx.font = '9px sans-serif';
         ctx.textAlign = 'center'; ctx.textBaseline = 'top';
         labels.forEach(function(lbl, i) {
@@ -1907,8 +1982,6 @@
             ctx.restore();
         });
     }
-
-    // ========== CORE LINE CHART RENDERER ==========
     function drawLineChart(canvasId, labels, datasets, yFmt) {
         var canvas = document.getElementById(canvasId);
         if (!canvas) return;
@@ -1917,22 +1990,15 @@
         canvas.width  = W;
         canvas.height = H;
         var ctx = canvas.getContext('2d');
-
         var ML = 46, MR = 10, MT = 32, MB = 38;
         var CW = W - ML - MR, CH = H - MT - MB;
-
         ctx.clearRect(0, 0, W, H);
-
-        // Max value
         var allVals = datasets.reduce(function(a,ds){ return a.concat(ds.data); }, []);
         var maxV    = Math.max.apply(null, allVals.concat([1]));
         var niceMax = Math.ceil(maxV / 5) * 5;
         if (niceMax === 0) niceMax = 10;
-
         var n = labels.length;
         if (n === 0) return;
-
-        // Grid lines + Y labels
         ctx.font = '9px sans-serif';
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
@@ -1944,24 +2010,15 @@
             ctx.fillStyle = '#aaa';
             ctx.fillText(yFmt ? yFmt(gv) : (gv >= 1000 ? (gv/1000).toFixed(1)+'k' : Math.round(gv)), ML - 4, gy);
         }
-
-        // X-axis line
         ctx.strokeStyle = '#ddd'; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.moveTo(ML, MT + CH); ctx.lineTo(ML + CW, MT + CH); ctx.stroke();
-
-        // X step
-        var step = n > 1 ? CW / (n - 1) : CW;
-
-        // Draw each dataset
         datasets.forEach(function(ds) {
-            if (ds.data.every(function(v){ return v === 0; })) return; // skip all-zero lines
-
+            if (ds.data.every(function(v){ return v === 0; })) return;
             ctx.beginPath();
             ctx.strokeStyle = ds.color;
             ctx.lineWidth   = 1.8;
             if (ds.dashed) ctx.setLineDash([5, 4]);
             else           ctx.setLineDash([]);
-
             var started = false;
             ds.data.forEach(function(val, i) {
                 var x = ML + i * (n > 1 ? CW / (n - 1) : 0);
@@ -1971,8 +2028,6 @@
             });
             ctx.stroke();
             ctx.setLineDash([]);
-
-            // Dots
             ds.data.forEach(function(val, i) {
                 if (val === 0) return;
                 var x = ML + i * (n > 1 ? CW / (n - 1) : 0);
@@ -1983,8 +2038,6 @@
                 ctx.fill();
             });
         });
-
-        // X labels
         ctx.fillStyle = '#888'; ctx.font = '9px sans-serif';
         ctx.textAlign = 'center'; ctx.textBaseline = 'top';
         labels.forEach(function(lbl, i) {
@@ -1996,7 +2049,6 @@
             ctx.restore();
         });
     }
-
     function clearCanvas(id, msg) {
         var canvas = document.getElementById(id); if (!canvas) return;
         var W = canvas.parentElement.offsetWidth || 300; var H = 220;
@@ -2007,19 +2059,14 @@
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText(msg, W/2, H/2);
     }
-
 </script>
-
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import {
   getAuth,
   signInAnonymously,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyA4zYaySi7OqxKBzMCzFGVOBrz2RUM7qTY",
   authDomain: "puretaoshop.firebaseapp.com",
@@ -2030,91 +2077,30 @@ const firebaseConfig = {
   appId: "1:549375720527:web:a43ff23e964e8b55ad3e3a",
   measurementId: "G-B6FH54PY09"
 };
-
 const app = initializeApp(firebaseConfig);
-
 const auth = getAuth(app);
-
 window.firebaseToken = "";
-
-// LOGIN
 signInAnonymously(auth)
-
-.then(() => {
-
-  console.log("Firebase Login Success");
-
-})
-
-.catch((err) => {
-
-  console.error(err);
-
-  alert("Firebase Login Error");
-
-});
-
-// WAIT LOGIN
+.then(() => { console.log("Firebase Login Success"); })
+.catch((err) => { console.error(err); alert("Firebase Login Error"); });
 onAuthStateChanged(auth, async(user) => {
-
   if(user){
-
-    window.firebaseToken =
-      await user.getIdToken();
-
+    window.firebaseToken = await user.getIdToken();
     console.log("Firebase Ready");
-
-    // START SYSTEM
     startApp();
-
   }
-
 });
-
-// FETCH WITH TOKEN
-async function firebaseFetch(
-  url,
-  options = {}
-){
-
-  if(!window.firebaseToken){
-
-    throw new Error("No Firebase Token");
-
-  }
-
-  const separator =
-    url.includes("?") ? "&" : "?";
-
-  const finalUrl =
-    `${url}${separator}auth=${window.firebaseToken}`;
-
+async function firebaseFetch(url, options = {}) {
+  if(!window.firebaseToken){ throw new Error("No Firebase Token"); }
+  const separator = url.includes("?") ? "&" : "?";
+  const finalUrl = `${url}${separator}auth=${window.firebaseToken}`;
   return fetch(finalUrl, {
-
     ...options,
-
-    headers: {
-
-      "Content-Type": "application/json",
-
-      ...(options.headers || {})
-
-    }
-
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) }
   });
-
 }
-
 window.firebaseFetch = firebaseFetch;
-
 window.onload = () => {};
-
 </script>
-
 </body>
 </html>
-
-แก้ไขให้ เจ้าของร้าน กดยกเลิกรายการ ออเดอร์ ได้ทุกสถานะ
-ที่หน้าเมนู ให้เพิ่มรายการ " อื่นๆ " โดยสามารถใส่ยอดเงินเองได้ และเพิ่ม topping ที่กำหนดเองได้
-ปรับเวลาการ update ยอดเงินทุกอย่าง จาก 23.59  เป็น 6.00
-ปรับปุ่ม เพิ่มลงตะกร้า ให้อยู่บรรทัดเดียวกับ ยอดเงิน  และให้เล็กลง  และเพิ่มขนาดรูปอีก 15%
